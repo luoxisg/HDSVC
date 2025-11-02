@@ -43,6 +43,13 @@
       #one-swipe .p-2{ padding: .45rem; }
       #one-swipe .rounded-lg{ border-radius: .7rem; }
     }
+
+    /* ===== Why section polish (equal heights + better wrapping) ===== */
+    .why-card{ display:flex; flex-direction:column; height:100%; border-radius: 14px; border:1px solid #e5e7eb; background:#fff; box-shadow: 0 1px 0 rgba(0,0,0,.02); transition: box-shadow .2s ease, transform .2s ease; }
+    .why-card:hover{ box-shadow: 0 10px 24px rgba(15,118,110,.10); transform: translateY(-2px); }
+    .why-title{ font-weight:700; color:#0f766e; line-height:1.2; /* consistent two-line block */ min-height:3.2rem; display:block; overflow-wrap:anywhere; word-break:normal; hyphens:auto; }
+    .why-body{ color:#475569; margin-top:.25rem; }
+    .nowrap{ white-space:nowrap; }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
@@ -317,11 +324,23 @@
     <section id="why" class="section py-12">
       <div class="container mx-auto max-w-6xl px-6">
         <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="why.h2">Why Choose HDS Singapore?</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c1.t">1. Vertically Integrated Technology</h3><p class="text-stone-600" data-i18n="why.c1.d">Full‑stack IP from cold plates to CDUs, racks, and AIOps.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c2.t">2. Validated UHD Capability</h3><p class="text-stone-600" data-i18n="why.c2.d">Commercial‑ready 200kW+ DLC for next‑gen accelerators.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c3.t">3. Turnkey ECP Execution</h3><p class="text-stone-600" data-i18n="why.c3.d">One‑stop racks, power, cabling, cooling, and ops.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c4.t">4. 'Glocalized' R&D Partner</h3><p class="text-stone-600" data-i18n="why.c4.d">Singapore‑based with global delivery experience.</p></div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch">
+          <div class="why-card p-6">
+            <h3 class="why-title" data-i18n="why.c1.t">1. Vertically Integrated Technology</h3>
+            <p class="why-body" data-i18n="why.c1.d">Full‑stack IP from cold plates, manifolds, CDUs, racks, power, to AIOps.</p>
+          </div>
+          <div class="why-card p-6">
+            <h3 class="why-title" data-i18n="why.c2.t">2. Proven End‑to‑End Physical Chain</h3>
+            <p class="why-body" data-i18n="why.c2.d">Hands‑on experience across the full physical data‑center chain: design → supply → integration → validation.</p>
+          </div>
+          <div class="why-card p-6">
+            <h3 class="why-title" data-i18n="why.c3.t">3. Turnkey ECP Execution</h3>
+            <p class="why-body" data-i18n="why.c3.d">One‑stop Engineering, Construction & Procurement delivery, reducing project risk.</p>
+          </div>
+          <div class="why-card p-6">
+            <h3 class="why-title" data-i18n="why.c4.t">4. Joint‑Venture Engineering Teams</h3>
+            <p class="why-body" data-i18n="why.c4.d">Cross‑border JV teams with on‑ground build experience in Asia + global deployments.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -329,7 +348,7 @@
 
   <footer class="bg-stone-800 text-stone-300 py-10">
     <div class="container mx-auto max-w-6xl px-6 text-center">
-      <p class="text-base md:text-lg font-semibold mb-1" data-i18n="brand">HDS Singapore</p>
+      <p class="text-base md:text-sm font-semibold mb-1" data-i18n="brand">HDS Singapore</p>
       <p class="text-xs md:text-sm"><span data-i18n="footer">Powering the Future of Green Compute</span></p>
     </div>
   </footer>
@@ -356,7 +375,7 @@
         'quantum.check.i4':'VC‑A vibration baseline; heavy‑load setback',
         'quantum.check.i5':'PM/SM fibers with 30% capacity headroom',
         'quantum.check.i6':'AIOps telemetry for EMI/vibration/magnetics',
-        'why.h2':'Why Choose HDS Singapore?','why.c1.t':'1. Vertically Integrated Technology','why.c1.d':'Full‑stack IP.','why.c2.t':'2. Validated UHD Capability','why.c2.d':'200kW+ DLC.','why.c3.t':'3. Turnkey ECP Execution','why.c3.d':'One‑stop delivery.','why.c4.t':"4. 'Glocalized' R&D Partner",'why.c4.d':'Local + global.',
+        'why.h2':'Why Choose HDS Singapore?',$1'1. Vertically Integrated Technology',$1'Full‑stack IP from cold plates, manifolds, CDUs, racks, power, to AIOps.',$1'2. Proven End‑to‑End Physical Chain',$1'Hands‑on experience across the full physical data‑center chain: design → supply → integration → validation.',$1'3. Turnkey ECP Execution',$1'One‑stop Engineering, Construction & Procurement delivery, reducing project risk.',$1'4. Joint‑Venture Engineering Teams'Glocalized' R&D Partner",$1'Cross‑border JV teams with on‑ground build experience in Asia + global deployments.',
         footer:'Powering the Future of Green Compute',
         'ui.summary':'Summary','ui.compact':'Compact',
         'summary.title':'HDS Zenith — One‑Screen Summary','summary.badge.green':'Green DC','summary.badge.tropical':'Tropical Ready','summary.badge.aiops':'AIOps','summary.badge.rapid':'Rapid Deploy','summary.badge.qc':'QC‑Ready','summary.kpi1.l':'Full‑year PUE','summary.kpi2.l':'Rack Density','summary.kpi3.l':'Space Utilization','summary.kpi4.l':'External Footprint','summary.kpi5.l':'Roadmap','summary.kpi6.l':'Ops Platform','summary.kpi6.v':'Hardware‑agnostic AIOps','summary.col1.t':'Zenith‑Cool','summary.col1.d':'Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.','summary.col2.t':'Zenith‑Deploy','summary.col2.d':'2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.','summary.col3.t':'Zenith‑Ops','summary.col3.d':'Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).','summary.cta.project':'View R&D KPIs','summary.cta.tech':'See Tech Details','summary.cta.why':'Why HDS'
@@ -435,6 +454,10 @@
       tabs.forEach(b=>b.addEventListener('click',()=>setActive(b.getAttribute('data-tech-tab'))));
       // Ensure default state is Cooling
       setActive('cooling');
+
+      // --- Minimal tests for Why-section sizing integrity ---
+      const whyCards = document.querySelectorAll('.why-card');
+      console.assert(whyCards.length === 4, '[Test] Why section should have 4 cards');
     }
 
     // --- Lightweight runtime tests to catch regressions ---
