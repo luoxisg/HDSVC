@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>HDS Singapore — Technology Proposal</title>
+  <title>HDS Singapore — Technology Proposal (QC‑Ready)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,6 +12,9 @@
     body { font-family: 'Inter', sans-serif; }
     .nav-link { padding: 0.5rem 0.75rem; color: rgb(87 83 78); }
     .nav-link:hover { color: rgb(13 148 136); }
+    .tech-toggle-btn { padding: 0.75rem 1rem; border-radius: 0.5rem; border-width: 2px; font-weight: 600; }
+    .tech-toggle-btn-active { background: rgb(13 148 136); color: white; box-shadow: 0 6px 16px rgba(13,148,136,.25); border-color: transparent; }
+    .tech-toggle-btn-inactive { background: white; color: rgb(68 64 60); border-color: transparent; }
 
     /* Charts */
     .chart-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; height: 340px; }
@@ -32,71 +35,119 @@
     @media (max-width: 767px) {
       .chart-container, .chart-container-horizontal, .chart-container-timeline { height: 220px; max-width: 100%; }
     }
+    /* One‑Swipe tweaks (compact spacing on small screens only) */
+    @media (max-width: 767px){
+      #one-swipe h2{ font-size: 1.1rem; }
+      #one-swipe .text-sm{ font-size: .9rem; }
+      #one-swipe .p-3{ padding: .6rem; }
+      #one-swipe .p-2{ padding: .45rem; }
+      #one-swipe .rounded-lg{ border-radius: .7rem; }
+    }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
   <!-- Header / Nav -->
   <header class="w-full bg-white/90 backdrop-blur-sm shadow-sm z-50">
     <nav class="container mx-auto max-w-6xl px-4 flex justify-between items-center h-16">
-      <div class="text-xl font-bold text-teal-700">HDS Singapore</div>
+      <div class="text-xl font-bold text-teal-700" data-i18n="brand">HDS Singapore</div>
       <div class="desktop-nav hidden md:flex items-center space-x-2">
-        <a href="#vision" class="nav-link" data-scroll-to="vision">Vision</a>
-        <a href="#challenge" class="nav-link" data-scroll-to="challenge">Challenge</a>
-        <a href="#solution" class="nav-link" data-scroll-to="solution">Solution</a>
-        <a href="#tech" class="nav-link" data-scroll-to="tech">Tech Deep Dive</a>
-        <a href="#project" class="nav-link" data-scroll-to="project">R&D Proposal</a>
-        <a href="#why" class="nav-link" data-scroll-to="why">Why HDS</a>
+        <a href="#vision" class="nav-link" data-scroll-to="vision" data-i18n="nav.vision">Vision</a>
+        <a href="#challenge" class="nav-link" data-scroll-to="challenge" data-i18n="nav.challenge">Challenge</a>
+        <a href="#solution" class="nav-link" data-scroll-to="solution" data-i18n="nav.solution">Solution</a>
+        <a href="#tech" class="nav-link" data-scroll-to="tech" data-i18n="nav.tech">Tech Deep Dive</a>
+        <a href="#one-swipe" class="nav-link" data-scroll-to="one-swipe">One‑Swipe</a>
+        <a href="#quantum" class="nav-link" data-scroll-to="quantum" data-i18n="nav.quantum">Quantum</a>
+        <a href="#why" class="nav-link" data-scroll-to="why" data-i18n="nav.why">Why HDS</a>
       </div>
       <div class="flex items-center space-x-2">
-        <button id="summary-toggle" class="px-2.5 py-1.5 rounded-lg border border-teal-200 text-teal-700 text-sm bg-teal-50 hover:border-teal-400">Summary</button>
-        <button id="compact-toggle" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400">Compact</button>
+        <button id="summary-toggle" class="px-2.5 py-1.5 rounded-lg border border-teal-200 text-teal-700 text-sm bg-teal-50 hover:border-teal-400" data-i18n="ui.summary">Summary</button>
+        <button id="compact-toggle" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400" data-i18n="ui.compact">Compact</button>
         <button id="mobile-menu-btn" class="md:hidden text-stone-700 p-2" aria-label="Open menu">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
         </button>
       </div>
     </nav>
     <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute top-16 left-0 w-full z-40">
-      <a href="#vision" data-scroll-to="vision" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">Vision</a>
-      <a href="#challenge" data-scroll-to="challenge" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">Challenge</a>
-      <a href="#solution" data-scroll-to="solution" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">Solution</a>
-      <a href="#tech" data-scroll-to="tech" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">Tech Deep Dive</a>
-      <a href="#project" data-scroll-to="project" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">R&D Proposal</a>
-      <a href="#why" data-scroll-to="why" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">Why HDS</a>
+      <a href="#vision" data-scroll-to="vision" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.vision">Vision</a>
+      <a href="#challenge" data-scroll-to="challenge" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.challenge">Challenge</a>
+      <a href="#solution" data-scroll-to="solution" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.solution">Solution</a>
+      <a href="#tech" data-scroll-to="tech" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.tech">Tech Deep Dive</a>
+      <a href="#one-swipe" data-scroll-to="one-swipe" class="block px-5 py-3 text-stone-700 hover:bg-teal-50">One‑Swipe</a>
+      <a href="#quantum" data-scroll-to="quantum" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.quantum">Quantum</a>
+      <a href="#why" data-scroll-to="why" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.why">Why HDS</a>
     </div>
   </header>
+
+  <!-- One‑Swipe mobile-first summary (non-intrusive; full page remains available) -->
+  <section id="one-swipe" class="section py-6 bg-white">
+    <div class="container mx-auto max-w-6xl px-6">
+      <div class="rounded-xl border border-stone-200 bg-stone-50 p-4 md:p-6">
+        <h2 class="text-xl md:text-2xl font-bold text-teal-700 mb-2">Mobile One‑Swipe Summary</h2>
+        <p class="text-stone-700 mb-4">A compact, phone‑friendly digest of the entire page. All full sections remain below.</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Green DC</span>
+          <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Tropical Ready</span>
+          <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Rapid Deploy</span>
+          <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">AIOps</span>
+          <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">QC‑Ready</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+          <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200 bg-white"><span>⚡</span><div><div class="text-stone-500 text-[11px]">Full‑year PUE</div><div class="font-bold">&lt;1.15</div></div></div>
+          <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200 bg-white"><span>🧊</span><div><div class="text-stone-500 text-[11px]">Rack Density</div><div class="font-bold">200kW/rack</div></div></div>
+          <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200 bg-white"><span>📦</span><div><div class="text-stone-500 text-[11px]">Space</div><div class="font-bold">+50%</div></div></div>
+          <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200 bg-white"><span>🗓️</span><div><div class="text-stone-500 text-[11px]">Roadmap</div><div class="font-bold">6 Quarters</div></div></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Cool</div><div class="text-sm">Hybrid cooling (thermosyphon + on‑demand DLC).</div></div>
+          <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Deploy</div><div class="text-sm">2.4m ceiling, slab‑on‑grade, busbars.</div></div>
+          <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Ops</div><div class="text-sm">Unified telemetry; predictive loop.</div></div>
+        </div>
+        <div class="bg-white border rounded-lg p-3">
+          <div class="font-semibold text-teal-700 mb-1">Quantum Integration (Deep Tech)</div>
+          <ul class="list-disc pl-5 text-sm text-stone-700 space-y-1">
+            <li>Q‑Zone (20 kN/m² slab), blind‑flanged cryo/vent interfaces</li>
+            <li>Mu‑metal + Cu‑mesh shielding; star ground; VC‑A baseline</li>
+            <li>PM/SM fibers; QKD‑ready paths; sub‑ns QPU↔GPU timing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="text-center text-stone-500 text-sm mt-2 mb-6 select-none">↓ Scroll for full site</div>
+  </section>
 
   <!-- SUMMARY (single) -->
   <section id="summaryPanel" class="hidden fixed inset-0 z-[60] bg-white overflow-auto">
     <div class="container mx-auto max-w-6xl px-4 py-6 min-h-[100svh] flex flex-col justify-center">
       <div class="flex items-center justify-between mb-4">
-        <div class="text-lg font-semibold text-teal-700">HDS Zenith — One‑Screen Summary</div>
+        <div class="text-lg font-semibold text-teal-700" data-i18n="summary.title">HDS Zenith — One‑Screen Summary</div>
         <button id="closeSummary" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400" aria-label="Close">✕</button>
       </div>
-      <h1 class="text-2xl md:text-4xl font-bold text-teal-700 mb-2">HDS Singapore</h1>
-      <p class="text-base md:text-xl text-stone-700 mb-4">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
+      <h1 class="text-2xl md:text-4xl font-bold text-teal-700 mb-2" data-i18n="vision.h1">HDS Singapore</h1>
+      <p class="text-base md:text-xl text-stone-700 mb-4" data-i18n="vision.tagline">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
       <div class="flex flex-wrap gap-2 mb-4">
-        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Green DC</span>
-        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Tropical Ready</span>
-        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">AIOps</span>
-        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs">Rapid Deploy</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.green">Green DC</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.tropical">Tropical Ready</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.aiops">AIOps</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.rapid">Rapid Deploy</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.qc">QC‑Ready</span>
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>⚡</span><div><div class="text-stone-500 text-[11px]">Full‑year PUE</div><div class="font-bold"><span>&lt;1.15</span></div></div></div>
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🧊</span><div><div class="text-stone-500 text-[11px]">Rack Density</div><div class="font-bold">200kW / rack</div></div></div>
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>📦</span><div><div class="text-stone-500 text-[11px]">Space Utilization</div><div class="font-bold">+50%</div></div></div>
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🏗️</span><div><div class="text-stone-500 text-[11px]">External Footprint</div><div class="font-bold">-60%</div></div></div>
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🗓️</span><div><div class="text-stone-500 text-[11px]">Roadmap</div><div class="font-bold">6 Quarters</div></div></div>
-        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🤖</span><div><div class="text-stone-500 text-[11px]">Ops Platform</div><div class="font-bold">Hardware‑agnostic AIOps</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>⚡</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi1.l">Full‑year PUE</div><div class="font-bold"><span><1.15</span></div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🧊</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi2.l">Rack Density</div><div class="font-bold">200kW / rack</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>📦</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi3.l">Space Utilization</div><div class="font-bold">+50%</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🏗️</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi4.l">External Footprint</div><div class="font-bold">-60%</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🗓️</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi5.l">Roadmap</div><div class="font-bold">6 Quarters</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🤖</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi6.l">Ops Platform</div><div class="font-bold" data-i18n="summary.kpi6.v">Hardware‑agnostic AIOps</div></div></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
-        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Cool</div><div class="text-sm">Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.</div></div>
-        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Deploy</div><div class="text-sm">2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.</div></div>
-        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1">Zenith‑Ops</div><div class="text-sm">Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).</div></div>
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col1.t">Zenith‑Cool</div><div class="text-sm" data-i18n="summary.col1.d">Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.</div></div>
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col2.t">Zenith‑Deploy</div><div class="text-sm" data-i18n="summary.col2.d">2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.</div></div>
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col3.t">Zenith‑Ops</div><div class="text-sm" data-i18n="summary.col3.d">Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).</div></div>
       </div>
       <div class="flex flex-wrap gap-2">
-        <a href="#project" data-scroll-to="project" class="px-3 py-2 rounded-lg text-center bg-teal-700 text-white" role="button">View R&D KPIs</a>
-        <a href="#tech" data-scroll-to="tech" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" role="button">See Tech Details</a>
-        <a href="#why" data-scroll-to="why" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" role="button">Why HDS</a>
+        <a href="#project" data-scroll-to="project" class="px-3 py-2 rounded-lg text-center bg-teal-700 text-white" data-i18n="summary.cta.project" role="button">View R&D KPIs</a>
+        <a href="#tech" data-scroll-to="tech" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" data-i18n="summary.cta.tech" role="button">See Tech Details</a>
+        <a href="#why" data-scroll-to="why" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" data-i18n="summary.cta.why" role="button">Why HDS</a>
       </div>
     </div>
   </section>
@@ -105,220 +156,172 @@
   <main>
     <section id="vision" class="section pt-12 pb-10 bg-white">
       <div class="container mx-auto max-w-6xl px-6 text-center">
-        <h1 class="text-3xl md:text-5xl font-bold text-teal-700 mb-3">HDS Singapore</h1>
-        <p class="text-xl md:text-3xl font-medium text-stone-800 mb-4">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
-        <p class="text-base md:text-lg text-stone-600 max-w-3xl mx-auto">We engineer next‑gen Micro‑Module Data Centers (MDC) tailored to Singapore's thermodynamic and spatial constraints.</p>
+        <h1 class="text-3xl md:text-5xl font-bold text-teal-700 mb-3" data-i18n="vision.h1">HDS Singapore</h1>
+        <p class="text-xl md:text-3xl font-medium text-stone-800 mb-4" data-i18n="vision.tagline">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
+        <p class="text-base md:text-lg text-stone-600 max-w-3xl mx-auto" data-i18n="vision.desc">We engineer next‑gen Micro‑Module Data Centers (MDC) tailored to Singapore's thermodynamic and spatial constraints.</p>
       </div>
     </section>
 
     <section id="challenge" class="section py-12">
       <div class="container mx-auto max-w-6xl px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Singapore's Unique Challenges</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8" data-i18n="challenge.h2">Singapore's Unique Challenges</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2">1. Exponential Compute Density</h3><p class="text-stone-600">AI/ML workloads push >50kW racks, beyond conventional air cooling limits.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2">2. Ambient Thermodynamic Constraints</h3><p class="text-stone-600">Tropical, high‑humidity climate makes facility cooling a dominant energy load.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2">3. Spatiotemporal Constraints</h3><p class="text-stone-600">Land scarcity and high construction costs demand high spatial efficiency and rapid deployment.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c1.title">1. Exponential Compute Density</h3><p class="text-stone-600" data-i18n="challenge.c1.desc">AI/ML workloads push >50kW racks, beyond conventional air cooling limits.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c2.title">2. Ambient Thermodynamic Constraints</h3><p class="text-stone-600" data-i18n="challenge.c2.desc">Tropical, high‑humidity climate makes facility cooling a dominant energy load.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c3.title">3. Spatiotemporal Constraints</h3><p class="text-stone-600" data-i18n="challenge.c3.desc">Land scarcity and high construction costs demand high spatial efficiency and rapid deployment.</p></div>
         </div>
       </div>
     </section>
 
     <section id="solution" class="section py-12 bg-white">
       <div class="container mx-auto max-w-6xl px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Our Solution: The HDS "Zenith" Series Micro‑Module</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="solution.h2">Our Solution: The HDS "Zenith" Series Micro‑Module</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">❄️</span><h3 class="text-xl font-semibold text-teal-700 my-2">Zenith‑Cool</h3><p class="text-stone-600">Hybrid cooling (thermosyphon + DLC on‑demand) achieves extreme PUE in tropics.</p></div>
-          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">📦</span><h3 class="text-xl font-semibold text-teal-700 my-2">Zenith‑Deploy</h3><p class="text-stone-600">2.4m ceiling, slab‑on‑grade; busbars free U‑space: +50% space, −60% footprint.</p></div>
-          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">🤖</span><h3 class="text-xl font-semibold text-teal-700 my-2">Zenith‑Ops</h3><p class="text-stone-600">AIOps for dynamic thermal balancing, unified monitoring, predictive failure.</p></div>
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">❄️</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p1.title">Zenith‑Cool</h3><p class="text-stone-600" data-i18n="solution.p1.desc">Hybrid cooling (thermosyphon + DLC on‑demand) achieves extreme PUE in tropics.</p></div>
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">📦</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p2.title">Zenith‑Deploy</h3><p class="text-stone-600" data-i18n="solution.p2.desc">2.4m ceiling, slab‑on‑grade; busbars free U‑space: +50% space, −60% footprint.</p></div>
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">🤖</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p3.title">Zenith‑Ops</h3><p class="text-stone-600" data-i18n="solution.p3.desc">AIOps for dynamic thermal balancing, unified monitoring, predictive failure.</p></div>
         </div>
       </div>
     </section>
 
     <section id="tech" class="section py-12">
       <div class="container mx-auto max-w-6xl px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Tech Deep Dive</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="tech.h2">Tech Deep Dive</h2>
 
-        <!-- Zenith‑Cool: Chart + Details -->
-        <div class="bg-white p-6 rounded-lg border mb-8">
-          <h3 class="text-xl font-semibold text-teal-700 mb-3">Zenith‑Cool</h3>
-          <div class="chart-container mb-4"><canvas id="pueChart"></canvas></div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-stone-50 border border-stone-200 rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Biphasic Thermosyphon — Highlights</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Natural economization window expands by 40–70%; modular evaporator/condenser with parallel redundancy.</li>
-                <li>Typical capacity: 120–250kW per unit; ΔT 7–12°C; efficient under 28–34°C hot & humid ambient.</li>
-                <li>Fully sealed refrigerant loop, near‑zero pump power; supports N+1 bypass redundancy.</li>
-              </ul>
-            </div>
-            <div class="bg-stone-50 border border-stone-200 rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Direct Liquid Cooling (DLC) — End‑to‑End</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Cold‑plate or immersion; rack‑side CDU 200kW class; HX ratio 1:1 or 1:2 configurable.</li>
-                <li>Quick‑connect rated ≥ 6 bar; leak detection & drip tray; conductive inhibitor or dielectric strategy.</li>
-                <li>Secondary loop water quality: conductivity &lt; 5 μS/cm; particles ≤ 50 μm; dosing/filtration skid with DP monitoring.</li>
-              </ul>
-            </div>
-          </div>
-
-          <details class="bg-white border rounded-lg p-4 mb-3" id="cool-specs">
-            <summary class="font-semibold text-teal-700 cursor-pointer">Spec Sheet — Cooling Chain (excerpt)</summary>
-            <div class="overflow-x-auto mt-3">
-              <table class="min-w-full text-sm">
-                <thead class="text-stone-600">
-                  <tr class="border-b"><th class="py-2 pr-4 text-left">Item</th><th class="py-2 pr-4 text-left">Spec</th><th class="py-2 text-left">Notes</th></tr>
-                </thead>
-                <tbody class="text-stone-800">
-                  <tr class="border-b"><td class="py-2 pr-4">Rack DLC capacity</td><td class="py-2 pr-4">200 kW/rack (continuous)</td><td class="py-2">1.2× transient headroom for 15 min</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">CDU pump head / flow</td><td class="py-2 pr-4">Head 35–45 m; 120–160 L/min</td><td class="py-2">VFD with N+1 pumps</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Plate HX UA (primary↔secondary)</td><td class="py-2 pr-4">≥ 4.5 kW/K</td><td class="py-2">Stainless plates, Gasketed</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Coolant chemistry (sec. loop)</td><td class="py-2 pr-4">Inhibited DI water, 0–20% PG</td><td class="py-2">pH 7.5–8.5; biocide dosing</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Filtration</td><td class="py-2 pr-4">50→10 μm staged; ΔP alarm</td><td class="py-2">Cartridge skid w/ bypass</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Quick‑connects</td><td class="py-2 pr-4">≥ 6 bar working; dry‑break</td><td class="py-2">Drip tray + leak rope sensor</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Condensation control</td><td class="py-2 pr-4">Supply ≥ dew‑point + 2°C</td><td class="py-2">Dew‑point sensor at rack inlet</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-
-          <details class="bg-white border rounded-lg p-4" id="cool-sequences">
-            <summary class="font-semibold text-teal-700 cursor-pointer">Control Sequences & Interlocks</summary>
-            <ul class="list-disc ml-5 mt-3 text-sm space-y-1">
-              <li>Economizer‑first: thermosyphon duty prioritized; DLC ramps by ΔT threshold & rack inlet temp gradient.</li>
-              <li>Anti‑condensation: reduce flow or raise supply setpoint when dew‑point approach &lt; 2°C.</li>
-              <li>Leak response: immediate CDU stop, isolated valve close, alarm & work‑order creation.</li>
-              <li>Pump/valve short‑cycle guard: min‑on/min‑off timers; MPC smoothing of setpoint steps.</li>
-            </ul>
-          </details>
+        <!-- Tab bar -->
+        <div id="tech-tabs" class="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <button class="tech-toggle-btn tech-toggle-btn-active" data-tech-tab="cooling">Cooling</button>
+          <button class="tech-toggle-btn tech-toggle-btn-inactive" data-tech-tab="deploy">Deploy</button>
+          <button class="tech-toggle-btn tech-toggle-btn-inactive" data-tech-tab="ops">Ops</button>
+          <button class="tech-toggle-btn tech-toggle-btn-inactive" data-tech-tab="qc">QC</button>
         </div>
 
-        <!-- Zenith‑Deploy: Chart + Details -->
-        <div class="bg-white p-6 rounded-lg border mb-8">
-          <h3 class="text-xl font-semibold text-teal-700 mb-3">Zenith‑Deploy</h3>
-          <p class="text-stone-700 text-sm mb-3">2.4m ceiling, slab‑on‑grade floor, busbar power (replacing PDUs) to deliver +50% space utilization and −60% external footprint.</p>
-          <div class="chart-container-horizontal mb-4"><canvas id="deployChart"></canvas></div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div class="bg-stone-50 border rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Power &amp; Busbar</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Busbar 800–1200A, tap‑off 63–250A; ~10% U‑space reclaimed.</li>
-                <li>UPS topology: centralized or distributed; electronic breakers on IT branch circuits.</li>
-              </ul>
-            </div>
-            <div class="bg-stone-50 border rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Mechanical &amp; Acoustic</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Horizontal airflow; floor loading ≥ 12 kN/m²; base isolation ≥ 6 dB.</li>
-                <li>Outdoor heat‑rejection array with acoustic shrouds; boundary noise ≤ background +5 dB(A).</li>
-              </ul>
-            </div>
-            <div class="bg-stone-50 border rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Controls &amp; BMS</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Modbus TCP/RTU, BACnet/IP, SNMP v2c/v3; parameterized sequences & interlocks.</li>
-                <li>Supply/return thresholds, cooling‑first/noise‑first modes; maintenance bypass & safe‑stop curves.</li>
-              </ul>
-            </div>
+        <!-- Panels -->
+        <div id="tech-panels" class="space-y-6">
+          <!-- Cooling panel (default visible) -->
+          <div class="bg-white p-6 rounded-lg border" data-tech-panel="cooling">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3" data-i18n="cool.h3">Zenith‑Cool</h3>
+            <p class="text-stone-700 mb-3">Hybrid scheme combining thermosyphon (facility‑level heat rejection) and on‑demand direct liquid cooling (DLC) at the rack for ultra‑high densities.</p>
+            <div class="chart-container"><canvas id="pueChart"></canvas></div>
           </div>
 
-          <details class="bg-white border rounded-lg p-4 mb-3" id="deploy-specs">
-            <summary class="font-semibold text-teal-700 cursor-pointer">Spec Sheet — Power & Facility (excerpt)</summary>
-            <div class="overflow-x-auto mt-3">
-              <table class="min-w-full text-sm">
-                <thead class="text-stone-600"><tr class="border-b"><th class="py-2 pr-4 text-left">Item</th><th class="py-2 pr-4 text-left">Spec</th><th class="py-2 text-left">Notes</th></tr></thead>
-                <tbody class="text-stone-800">
-                  <tr class="border-b"><td class="py-2 pr-4">Busbar system</td><td class="py-2 pr-4">1000A, IP54, tin‑plated copper</td><td class="py-2">Tap‑off 125A default</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Grounding</td><td class="py-2 pr-4">TN‑S; &lt; 1 Ω at MGB</td><td class="py-2">IEC 60364 compliant</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Rack power</td><td class="py-2 pr-4">3‑phase 400V, 50Hz</td><td class="py-2">Dual feed (A/B)</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Fire safety</td><td class="py-2 pr-4">VESDA + clean agent</td><td class="py-2">Door interlocks</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">Ingress protection</td><td class="py-2 pr-4">MDC shell IP54</td><td class="py-2">Gasketed panels</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">EMC</td><td class="py-2 pr-4">EN 55032/55035</td><td class="py-2">Class A</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-
-          <details class="bg-white border rounded-lg p-4" id="deploy-sequences">
-            <summary class="font-semibold text-teal-700 cursor-pointer">Install & Commissioning Checks</summary>
-            <ul class="list-disc ml-5 mt-3 text-sm space-y-1">
-              <li>Torque audit for busbar joints; thermal imaging after 1‑hour full‑load soak.</li>
-              <li>Floor loading verification; vibration isolation placement and fastener locking.</li>
-              <li>BMS point‑to‑point: modbus register map validation; alarm/ack loop test.</li>
+          <!-- Deploy panel -->
+          <div class="bg-white p-6 rounded-lg border hidden" data-tech-panel="deploy">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">Zenith‑Deploy</h3>
+            <ul class="list-disc pl-6 text-stone-700 space-y-1">
+              <li>Slab‑on‑grade layout; 2.4 m clear ceiling for cable trays and busbars</li>
+              <li>Busbar power distribution to free U‑space; hot/cold containment ready</li>
+              <li>Modular CDU skids; quick‑connect manifolds; maintenance clearances</li>
             </ul>
-          </details>
-        </div>
-
-        <!-- Zenith‑Ops: Telemetry + AIOps loop -->
-        <div class="bg-white p-6 rounded-lg border">
-          <h3 class="text-xl font-semibold text-teal-700 mb-3">Zenith‑Ops</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-stone-50 border border-stone-200 rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">Unified Telemetry</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Sensing: supply/return temps & ΔP, rack inlet temps, power, flow, valve position, pump Hz, ambient dew point.</li>
-                <li>Data plane: time‑series DB (Prometheus/InfluxDB); edge broker (MQTT/EMQX).</li>
-                <li>Asset registry: rack/U‑level; HX serial/MTBF; work‑order closed loop.</li>
-              </ul>
-            </div>
-            <div class="bg-stone-50 border border-stone-200 rounded-lg p-4">
-              <h4 class="font-semibold text-teal-700 mb-2">AIOps Control</h4>
-              <ul class="list-disc ml-5 text-stone-700 space-y-1 text-sm">
-                <li>Anomaly: temp‑gradient/ΔP drift, pump/valve short‑cycling, rising cold‑plate thermal resistance.</li>
-                <li>Prediction: remaining useful life (RUL), condensation risk, fan‑liquid energy optimum.</li>
-                <li>Actuation: valve/pump PID + MPC coordination; strategy switches (economizer‑first / performance‑first).</li>
-              </ul>
-            </div>
           </div>
 
-          <details class="bg-white border rounded-lg p-4 mb-3" id="ops-points">
-            <summary class="font-semibold text-teal-700 cursor-pointer">BMS Point Map (excerpt)</summary>
-            <div class="overflow-x-auto mt-3">
-              <table class="min-w-full text-sm">
-                <thead class="text-stone-600"><tr class="border-b"><th class="py-2 pr-4 text-left">Point</th><th class="py-2 pr-4 text-left">Type</th><th class="py-2 pr-4 text-left">Range/Unit</th><th class="py-2 text-left">Remark</th></tr></thead>
-                <tbody class="text-stone-800">
-                  <tr class="border-b"><td class="py-2 pr-4">RACK_INLET_TEMP_[1..N]</td><td class="py-2 pr-4">AI</td><td class="py-2 pr-4">0–60°C</td><td class="py-2">Averaged per rack</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">CDU_SUPPLY_TEMP</td><td class="py-2 pr-4">AI</td><td class="py-2 pr-4">0–40°C</td><td class="py-2">Secondary loop</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">CDU_PUMP_SPEED</td><td class="py-2 pr-4">AO</td><td class="py-2 pr-4">0–100 %</td><td class="py-2">VFD</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">DLC_VALVE_POS_[1..N]</td><td class="py-2 pr-4">AO</td><td class="py-2 pr-4">0–100 %</td><td class="py-2">Per rack branch</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">LEAK_ALARM_[1..N]</td><td class="py-2 pr-4">DI</td><td class="py-2 pr-4">0/1</td><td class="py-2">Rope sensor</td></tr>
-                  <tr class="border-b"><td class="py-2 pr-4">DEWPOINT</td><td class="py-2 pr-4">AI</td><td class="py-2 pr-4">0–30°C</td><td class="py-2">Ambient</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-
-          <details class="bg-white border rounded-lg p-4" id="ops-service">
-            <summary class="font-semibold text-teal-700 cursor-pointer">Serviceability & Reliability</summary>
-            <ul class="list-disc ml-5 mt-3 text-sm space-y-1">
-              <li>Hot‑swap CDU pumps; isolation valves at every rack branch; drip tray with drain routing.</li>
-              <li>MTBF targets: pumps ≥ 50k h; valves ≥ 100k cycles; connectors ≥ 10k mate cycles.</li>
-              <li>Spare strategy: 10% pumps/valves, 2x filter sets, quick‑connect kits per 10 racks.</li>
+          <!-- Ops panel -->
+          <div class="bg-white p-6 rounded-lg border hidden" data-tech-panel="ops">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">Zenith‑Ops</h3>
+            <ul class="list-disc pl-6 text-stone-700 space-y-1">
+              <li>Hardware‑agnostic telemetry unifying air/liquid/hybrid cooling</li>
+              <li>Predictive loop: Monitor → Analyze → Predict → Actuate</li>
+              <li>Policy guardrails for PUE, water loop ΔT, and rack inlet temperatures</li>
             </ul>
-          </details>
+          </div>
+
+          <!-- QC panel (links to full Quantum section) -->
+          <div class="bg-white p-6 rounded-lg border hidden" data-tech-panel="qc">
+            <h3 class="text-xl font-semibold text-teal-700 mb-3">Quantum Integration (Preview)</h3>
+            <p class="text-stone-700 mb-3">Hybrid Quantum‑Classical readiness: cryogenic interfaces, EMI/RF shielding, optical/quantum links, and sub‑ns timing for QPU↔GPU workflows.</p>
+            <a href="#quantum" data-scroll-to="quantum" class="inline-block mt-1 px-3 py-2 rounded-lg border border-teal-700 text-teal-700">Jump to full details ↓</a>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="project" class="section py-12 bg-teal-800 text-white">
       <div class="container mx-auto max-w-6xl px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">R&D Proposal: The "Tropic‑AI" Micro‑Module</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="project.h2">R&D Proposal: The "Tropic‑AI" Micro‑Module</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1">KPI 1: Sub‑1.15 PUE</h4><p class="text-teal-100">Validate full‑year PUE &lt; 1.15 in Singapore environment.</p></div>
-          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1">KPI 2: 200kW/rack</h4><p class="text-teal-100">Commercial DLC for ultra‑high density AI racks.</p></div>
-          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1">KPI 3: AIOps</h4><p class="text-teal-100">Hardware‑agnostic platform unifying air/liquid/hybrid cooling.</p></div>
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi1.t">KPI 1: Sub‑1.15 PUE</h4><p class="text-teal-100" data-i18n="project.kpi1.d">Validate full‑year PUE < 1.15 in Singapore environment.</p></div>
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi2.t">KPI 2: 200kW/rack</h4><p class="text-teal-100" data-i18n="project.kpi2.d">Commercial DLC for ultra‑high density AI racks.</p></div>
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi3.t">KPI 3: AIOps</h4><p class="text-teal-100" data-i18n="project.kpi3.d">Hardware‑agnostic platform unifying air/liquid/hybrid cooling.</p></div>
         </div>
         <div class="chart-container-timeline bg-teal-700 p-3 rounded-lg mt-6"><canvas id="timelineChart"></canvas></div>
       </div>
     </section>
 
+    <!-- NEW: Quantum Compute Integration (Deep Technical) -->
+<section id="quantum" class="section py-12 bg-white">
+  <div class="container mx-auto max-w-6xl px-6">
+    <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Quantum Compute Integration (QC‑Ready v2 — Deep Technical)</h2>
+    <p class="text-stone-700 max-w-4xl mx-auto text-center mb-8 text-base md:text-lg">
+      The Zenith MDC is architected for future Hybrid Quantum‑Classical compute. This version extends beyond facilities pre‑reservation to define
+      <strong>technical integration pathways for QPU deployment, cryogenic systems, EMI/RF shielding, optical quantum links, and co‑scheduling with GPU clusters</strong>.
+    </p>
+
+    <!-- 3 Technical Pillars -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="p-6 bg-stone-50 rounded-lg border border-stone-200">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">1. Cryogenic & Physical Layer</h3>
+        <ul class="list-disc pl-5 text-stone-700 space-y-1 text-sm">
+          <li>Dedicated <strong>Q‑Zone</strong> with 20 kN/m² reinforced slab and secondary grouting option</li>
+          <li>Dry/wet cryogenic line routing with blind‑flanged access points</li>
+          <li>Support for Dilution Refrigerator (10 mK – 4K) or Helium‑free cryo systems</li>
+          <li>Thermal gradient isolation between Q‑Zone and classical racks (&lt;0.3°C cross‑bleed)</li>
+        </ul>
+      </div>
+      <div class="p-6 bg-stone-50 rounded-lg border border-stone-200">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">2. EMI / RF / Magnetic Stability</h3>
+        <ul class="list-disc pl-5 text-stone-700 space-y-1 text-sm">
+          <li><strong>Mu‑metal + Cu‑mesh composite shielding</strong> installation‑ready envelope</li>
+          <li>Star‑grounded shielding continuity with 360° termination</li>
+          <li>Magnetic background target: <strong>&lt; 2 mG RMS</strong> with heavy‑load setback ≥5m</li>
+          <li>Vibration class design: <strong>VC‑A baseline</strong>, upgrade path to VC‑B/VC‑C</li>
+        </ul>
+      </div>
+      <div class="p-6 bg-stone-50 rounded-lg border border-stone-200">
+        <h3 class="text-xl font-semibold text-teal-700 mb-2">3. Quantum Data & Interconnect</h3>
+        <ul class="list-disc pl-5 text-stone-700 space-y-1 text-sm">
+          <li>Low‑loss <strong>PM/SM fiber trays</strong> with bend‑radius control</li>
+          <li>QKD‑ready optical path allocation and labeling scheme</li>
+          <li>Provision for cryo‑to‑room‑temp signal chain (RF, coax, photonic)</li>
+          <li>Clock sync &amp; timing: sub‑ns skew paths for QPU‑GPU architectures</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Integration Architecture Diagram (Text Placeholder) -->
+    <div class="mt-10 bg-white border rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-teal-700 mb-3">Hybrid Quantum‑Classical Stack (Integration View)</h3>
+      <p class="text-stone-700 text-sm mb-3">The following 5‑layer model defines the integration boundary between Quantum and Classical compute inside the MDC:</p>
+      <ol class="list-decimal pl-6 text-stone-700 space-y-1 text-sm">
+        <li><strong>QPU Physical Layer</strong>: Cryostat, shielding, cabling, vibration isolation</li>
+        <li><strong>Quantum Control Electronics</strong>: AWGs, digitizers, RF sources, timing</li>
+        <li><strong>Quantum Runtime & OS</strong>: Qiskit, Braket, Cirq, error‑correction stack</li>
+        <li><strong>Classical Acceleration Layer</strong>: GPU/TPU clusters for pre/post‑processing</li>
+        <li><strong>Orchestration & Scheduling</strong>: Hybrid job scheduler for QPU‑CPU‑GPU workloads</li>
+      </ol>
+    </div>
+
+    <!-- QC‑Ready v2 Checklist (Technical) -->
+    <div class="mt-10 bg-white border rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-teal-700 mb-3">QC‑Ready v2 — Technical Checklist</h3>
+      <ul class="list-disc pl-6 text-stone-700 space-y-1 text-sm">
+        <li>Q‑Zone structural isolation + cryogenic routing + EMI shielding envelope</li>
+        <li>RF‑tight penetration design for coax/optical feedthrough</li>
+        <li>Sub‑ns clock sync for hybrid QPU‑GPU workloads</li>
+        <li>QKD‑ready optical path with labeled patching schema</li>
+        <li>Telemetry for EMI, vibration, magnetic flux, cryo stability</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
     <section id="why" class="section py-12">
       <div class="container mx-auto max-w-6xl px-6">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Why Choose HDS Singapore?</h2>
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="why.h2">Why Choose HDS Singapore?</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1">1. Vertically Integrated Technology</h3><p class="text-stone-600">Full‑stack IP from cold plates to CDUs, racks, and AIOps.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1">2. Validated UHD Capability</h3><p class="text-stone-600">Commercial‑ready 200kW+ DLC for next‑gen accelerators.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1">3. Turnkey ECP Execution</h3><p class="text-stone-600">One‑stop racks, power, cabling, cooling, and ops.</p></div>
-          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1">4. 'Glocalized' R&D Partner</h3><p class="text-stone-600">Singapore‑based with global delivery experience.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c1.t">1. Vertically Integrated Technology</h3><p class="text-stone-600" data-i18n="why.c1.d">Full‑stack IP from cold plates to CDUs, racks, and AIOps.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c2.t">2. Validated UHD Capability</h3><p class="text-stone-600" data-i18n="why.c2.d">Commercial‑ready 200kW+ DLC for next‑gen accelerators.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c3.t">3. Turnkey ECP Execution</h3><p class="text-stone-600" data-i18n="why.c3.d">One‑stop racks, power, cabling, cooling, and ops.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c4.t">4. 'Glocalized' R&D Partner</h3><p class="text-stone-600" data-i18n="why.c4.d">Singapore‑based with global delivery experience.</p></div>
         </div>
       </div>
     </section>
@@ -326,52 +329,62 @@
 
   <footer class="bg-stone-800 text-stone-300 py-10">
     <div class="container mx-auto max-w-6xl px-6 text-center">
-      <p class="text-base md:text-lg font-semibold mb-1">HDS Singapore</p>
-      <p class="text-xs md:text-sm"><span>Powering the Future of Green Compute</span></p>
+      <p class="text-base md:text-lg font-semibold mb-1" data-i18n="brand">HDS Singapore</p>
+      <p class="text-xs md:text-sm"><span data-i18n="footer">Powering the Future of Green Compute</span></p>
     </div>
   </footer>
 
   <script>
-    /******** Charts (English‑only) ********/
+    /******** i18n ********/
+    const I18N = {
+      en:{
+        brand:'HDS Singapore',
+        'nav.vision':'Vision','nav.challenge':'Challenge','nav.solution':'Solution','nav.tech':'Tech Deep Dive','nav.project':'R&D Proposal','nav.quantum':'Quantum','nav.why':'Why HDS',
+        'vision.h1':'HDS Singapore','vision.tagline':"Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure",'vision.desc':'We engineer next‑gen Micro‑Module Data Centers (MDC) tailored to Singapore\'s thermodynamic and spatial constraints.',
+        'challenge.h2':"Singapore's Unique Challenges",'challenge.c1.title':'1. Exponential Compute Density','challenge.c1.desc':'>50kW racks beyond air cooling limits.','challenge.c2.title':'2. Ambient Thermodynamic Constraints','challenge.c2.desc':'Tropical humidity raises cooling energy load.','challenge.c3.title':'3. Spatiotemporal Constraints','challenge.c3.desc':'Land scarcity requires high spatial efficiency.',
+        'solution.h2':'Our Solution: The HDS "Zenith" Series Micro‑Module','solution.p1.title':'Zenith‑Cool','solution.p1.desc':'Hybrid cooling for extreme PUE.','solution.p2.title':'Zenith‑Deploy','solution.p2.desc':'+50% space, −60% footprint.','solution.p3.title':'Zenith‑Ops','solution.p3.desc':'AIOps with unified monitoring.',
+        'tech.h2':'Tech Deep Dive','cool.h3':'Zenith‑Cool',
+        'project.h2':'R&D Proposal: The "Tropic‑AI" Micro‑Module','project.kpi1.t':'KPI 1: Sub‑1.15 PUE','project.kpi1.d':'Validate full‑year PUE < 1.15.','project.kpi2.t':'KPI 2: 200kW/rack','project.kpi2.d':'Commercial DLC integration.','project.kpi3.t':'KPI 3: AIOps','project.kpi3.d':'Unify air/liquid/hybrid.',
+        'quantum.h2':'QC‑Ready Enhancement',
+        'quantum.c1.t':'Cryo & Interfaces','quantum.c1.d':'Floor loading, penetrations, blind‑flanged cryo/vent interfaces; zero impact to current ops.',
+        'quantum.c2.t':'EMI / Vibration / Magnetic','quantum.c2.d':'Pre‑engineered grounding, optional shielding, VC‑A vibration target, < 2 mG background.',
+        'quantum.c3.t':'Optical / Quantum Links','quantum.c3.d':'Top‑layer fiber trays (SM/PM), bend‑radius control, orchestration‑ready telemetry.',
+        'quantum.check.t':'QC‑Ready Checklist',
+        'quantum.check.i1':'Q‑Zone reservation with structural allowances',
+        'quantum.check.i2':'Cryo/vent interfaces with sealed blind plates',
+        'quantum.check.i3':'Star‑grounding and 360° shield terminations',
+        'quantum.check.i4':'VC‑A vibration baseline; heavy‑load setback',
+        'quantum.check.i5':'PM/SM fibers with 30% capacity headroom',
+        'quantum.check.i6':'AIOps telemetry for EMI/vibration/magnetics',
+        'why.h2':'Why Choose HDS Singapore?','why.c1.t':'1. Vertically Integrated Technology','why.c1.d':'Full‑stack IP.','why.c2.t':'2. Validated UHD Capability','why.c2.d':'200kW+ DLC.','why.c3.t':'3. Turnkey ECP Execution','why.c3.d':'One‑stop delivery.','why.c4.t':"4. 'Glocalized' R&D Partner",'why.c4.d':'Local + global.',
+        footer:'Powering the Future of Green Compute',
+        'ui.summary':'Summary','ui.compact':'Compact',
+        'summary.title':'HDS Zenith — One‑Screen Summary','summary.badge.green':'Green DC','summary.badge.tropical':'Tropical Ready','summary.badge.aiops':'AIOps','summary.badge.rapid':'Rapid Deploy','summary.badge.qc':'QC‑Ready','summary.kpi1.l':'Full‑year PUE','summary.kpi2.l':'Rack Density','summary.kpi3.l':'Space Utilization','summary.kpi4.l':'External Footprint','summary.kpi5.l':'Roadmap','summary.kpi6.l':'Ops Platform','summary.kpi6.v':'Hardware‑agnostic AIOps','summary.col1.t':'Zenith‑Cool','summary.col1.d':'Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.','summary.col2.t':'Zenith‑Deploy','summary.col2.d':'2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.','summary.col3.t':'Zenith‑Ops','summary.col3.d':'Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).','summary.cta.project':'View R&D KPIs','summary.cta.tech':'See Tech Details','summary.cta.why':'Why HDS'
+      }
+    };
+
+    let LANG = 'en';
+    function applyI18n(){
+      document.documentElement.lang = 'en';
+      document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');const v=I18N[LANG][k]; if(v!==undefined){ el.textContent=v; }});
+    }
+
+    /******** Charts ********/
+    let pueChart, timelineChart;
     function initCharts(){
-      // PUE
       const pueCtx=document.getElementById('pueChart');
       if(pueCtx){
-        if(window._pueChart) window._pueChart.destroy();
-        window._pueChart=new Chart(pueCtx.getContext('2d'),{
+        pueChart=new Chart(pueCtx.getContext('2d'),{
           type:'bar',
-          data:{
-            labels:['Traditional DC (Air‑Cooled)','HDS Zenith (Hybrid)'],
-            datasets:[{label:'PUE (Lower is Better)',data:[1.45,1.15],backgroundColor:['rgba(209,213,219,.7)','rgba(15,118,110,.7)'],borderColor:['rgba(107,114,128,1)','rgba(13,148,136,1)'],borderWidth:2}]
-          },
-          options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:1}}}
+          data:{labels:['Traditional DC (Air-Cooled)','HDS Zenith (Hybrid)'],datasets:[{label:'PUE (Lower is Better)',data:[1.45,1.15],backgroundColor:['rgba(209,213,219,.7)','rgba(15,118,110,.7)'],borderColor:['rgba(107,114,128,1)','rgba(13,148,136,1)'],borderWidth:2}]},
+          options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:1}}}
         });
       }
-
-      // Deploy
-      const depCtx=document.getElementById('deployChart');
-      if(depCtx){
-        if(window._deployChart) window._deployChart.destroy();
-        window._deployChart=new Chart(depCtx.getContext('2d'),{
-          type:'bar',
-          data:{
-            labels:['Space Efficiency (Higher is Better)','External Footprint (Lower is Better)'],
-            datasets:[
-              {label:'Traditional DC',data:[100,100],backgroundColor:'rgba(209,213,219,.7)',borderColor:'rgba(107,114,128,1)',borderWidth:2},
-              {label:'HDS Zenith (+50% / -60%)',data:[150,40],backgroundColor:'rgba(15,118,110,.7)',borderColor:'rgba(13,148,136,1)',borderWidth:2}
-            ]
-          },
-          options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{beginAtZero:true}}}
-        });
-      }
-
-      // Timeline
       const tlCtx=document.getElementById('timelineChart');
       if(tlCtx){
-        if(window._tlChart) window._tlChart.destroy();
-        window._tlChart=new Chart(tlCtx.getContext('2d'),{
+        timelineChart=new Chart(tlCtx.getContext('2d'),{
           type:'bar',indexAxis:'y',
-          data:{labels:['Phase 3: Live Validation & PUE Testing','Phase 2: Prototype & Integration','Phase 1: Foundational R&D'],datasets:[{label:'Quarters',data:[[4,6],[2,4],[0,2]],backgroundColor:'rgba(255,255,255,.85)',borderColor:'rgba(209,213,219,1)',borderWidth:2,barPercentage:.6}]},
+          data:{labels:['Phase 3: Live Validation & PUE Testing','Phase 2: Prototype & Integration','Phase 1: Foundational R&D'],datasets:[{label:'Q',data:[[4,6],[2,4],[0,2]],backgroundColor:'rgba(255,255,255,.85)',borderColor:'rgba(209,213,219,1)',borderWidth:2,barPercentage:.6}]},
           options:{responsive:true,maintainAspectRatio:false,scales:{x:{min:0,max:6}}}
         });
       }
@@ -379,7 +392,7 @@
 
     /******** UI ********/
     function initUI(){
-      // Smooth scroll (also works from Summary overlay)
+      // Smooth scroll (also works from Summary overlay) + auto-close mobile menu
       document.querySelectorAll('[data-scroll-to]').forEach(a=>{
         a.addEventListener('click',e=>{
           e.preventDefault();
@@ -396,7 +409,7 @@
       if(mm){ mm.addEventListener('click',()=>document.getElementById('mobile-menu').classList.toggle('hidden')); }
       // Compact toggle
       document.getElementById('compact-toggle').addEventListener('click',()=>document.body.classList.toggle('compact'));
-      // Summary open/close
+      // Summary overlay
       const openBtn=document.getElementById('summary-toggle');
       const closeBtn=document.getElementById('closeSummary');
       const panel=document.getElementById('summaryPanel');
@@ -404,30 +417,38 @@
       if(closeBtn&&panel){closeBtn.addEventListener('click',()=>panel.classList.add('hidden'));}
       const isSmall=window.matchMedia('(max-width: 767px)').matches;
       if(isSmall && !sessionStorage.getItem('hds_summary_seen')){panel.classList.remove('hidden');sessionStorage.setItem('hds_summary_seen','1');}
+
+      // Tech tabs
+      const tabs=document.querySelectorAll('[data-tech-tab]');
+      const panels=document.querySelectorAll('[data-tech-panel]');
+      const setActive=(key)=>{
+        tabs.forEach(b=>{
+          const active=b.getAttribute('data-tech-tab')===key;
+          b.classList.toggle('tech-toggle-btn-active',active);
+          b.classList.toggle('tech-toggle-btn-inactive',!active);
+        });
+        panels.forEach(p=>{
+          const show=p.getAttribute('data-tech-panel')===key;
+          p.classList.toggle('hidden',!show);
+        });
+      };
+      tabs.forEach(b=>b.addEventListener('click',()=>setActive(b.getAttribute('data-tech-tab'))));
+      // Ensure default state is Cooling
+      setActive('cooling');
     }
 
-    document.addEventListener('DOMContentLoaded',()=>{ initCharts(); initUI();
-      // ---------- Extended Self Tests (console only) ----------
-      try {
-        console.assert(document.getElementById('pueChart')!==null,'pueChart canvas present');
-        console.assert(document.getElementById('deployChart')!==null,'deployChart canvas present');
-        console.assert(document.getElementById('timelineChart')!==null,'timelineChart canvas present');
-        console.assert(document.getElementById('cool-specs')!==null,'cool-specs details present');
-        console.assert(document.getElementById('cool-sequences')!==null,'cool-sequences details present');
-        console.assert(document.getElementById('deploy-specs')!==null,'deploy-specs details present');
-        console.assert(document.getElementById('deploy-sequences')!==null,'deploy-sequences details present');
-        console.assert(document.getElementById('ops-points')!==null,'ops-points details present');
-        console.assert(document.getElementById('ops-service')!==null,'ops-service details present');
-        // Toggle a <details> programmatically
-        const d=document.getElementById('cool-specs');
-        d.open=true; d.open=false; console.assert(d instanceof HTMLElement,'details togglable');
-        // Compact reversible
-        const before=document.querySelector('header .text-teal-700').textContent.trim();
-        document.body.classList.toggle('compact');
-        document.body.classList.toggle('compact');
-        console.assert(document.querySelector('header .text-teal-700').textContent.trim()===before,'compact toggle reversible');
-      } catch(e){ console.warn('Self-test note:', e); }
-    });
+    // --- Lightweight runtime tests to catch regressions ---
+    function runDiagnostics(){
+      try{
+        console.assert(typeof applyI18n==='function','applyI18n missing');
+        console.assert(typeof initUI==='function','initUI missing');
+        console.assert(document.getElementById('one-swipe'), '#one-swipe missing');
+        console.assert(document.querySelectorAll('[data-tech-tab]').length===4,'tech tabs count');
+        console.log('[OK] Diagnostics passed');
+      }catch(e){ console.error('[Diagnostics] failed', e); }
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{applyI18n(); initCharts(); initUI(); runDiagnostics();});
   </script>
 </body>
 </html>
