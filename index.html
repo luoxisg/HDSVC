@@ -1,879 +1,274 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HDS Singapore - Technology Proposal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Chosen Palette: "Calm Harmony" (Warm Neutrals: bg-stone-50, text-stone-800; Complimentary: bg-white, border-stone-200; Accent: teal-600) -->
-    <!-- Application Structure Plan: The SPA is structured as a top-down narrative VC proposal, guiding the user (a Singaporean VC) from the market problem to our solution and the specific R&D project. This is more effective than a generic product website. Key interactions include smooth-scrolling navigation to jump between proposal sections and a tabbed "Technology Deep Dive" to allow exploration of complex tech (Cooling, Deployment, Ops) without overwhelming the user. A language toggle now updates all content dynamically. -->
-    <!-- Visualization & Content Choices: 1. (Report Info: Envicool PUE/XFreecooling) -> Goal: Compare -> Viz: Bar Chart (Chart.js) -> Interaction: Static, clear labels -> Justification: Directly quantifies the "Green" benefit (PUE < 1.15 vs 1.45). 2. (Report Info: XSpace/XRack features) -> Goal: Organize -> Viz: Tabbed content sections (HTML/JS) -> Interaction: User clicks 'Zenith-Cool', 'Zenith-Deploy', 'Zenith-Ops' buttons to toggle content -> Justification: Manages high information density, allowing focused deep dives. 3. (Report Info: Market analysis, 200kW, Agnostic software) -> Goal: Inform/Organize -> Viz: 3-column feature grid (HTML/Tailwind) -> Interaction: None, static text -> Justification: Clearly defines the 3 core KPIs for the proposed R&D project. 4. (New) Deploy vs Traditional -> Goal: Compare -> Viz: Horizontal Grouped Bar (Chart.js) -> Justification: Visually quantifies the 50% space efficiency gain and 60% footprint reduction. 5. (New) AIOps Loop -> Goal: Organize/Inform -> Viz: HTML/Tailwind Diagram -> Justification: Illustrates the 'Zenith-Ops' process flow. 6. (New) R&D Timeline -> Goal: Inform -> Viz: Horizontal Gantt-style Bar (Chart.js) -> Justification: Provides a clear roadmap for the 'Tropic-AI' project. All charts and text are now dynamically updated by the language toggle. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>HDS Singapore — Technology Proposal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --compact-gap: 8px; }
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link { padding: 0.5rem 0.75rem; color: rgb(87 83 78); }
+    .nav-link:hover { color: rgb(13 148 136); }
+    .tech-toggle-btn { padding: 0.75rem 1rem; border-radius: 0.5rem; border-width: 2px; font-weight: 600; }
+    .tech-toggle-btn-active { background: rgb(13 148 136); color: white; box-shadow: 0 6px 16px rgba(13,148,136,.25); border-color: transparent; }
+    .tech-toggle-btn-inactive { background: white; color: rgb(68 64 60); border-color: transparent; }
 
-    <style>
-        body {
-            font-family: 'Inter', 'Noto Sans SC', sans-serif;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
-        }
-        .chart-container-horizontal {
-            position: relative;
-            width: 100%;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 250px;
-            max-height: 300px;
-        }
-        .chart-container-timeline {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 350px;
-        }
-        .nav-link {
-            @apply px-3 py-2 text-stone-600 hover:text-teal-600 transition-colors duration-200;
-        }
-        .nav-link-active {
-            @apply text-teal-600 font-semibold;
-        }
-        .tech-toggle-btn {
-            @apply w-full sm:w-auto text-lg font-medium px-6 py-3 rounded-lg transition-all duration-200 border-2 border-transparent;
-        }
-        .tech-toggle-btn-active {
-            @apply bg-teal-600 text-white shadow-lg;
-        }
-        .tech-toggle-btn-inactive {
-            @apply bg-white text-stone-700 hover:border-teal-300;
-        }
-    </style>
+    /* Charts */
+    .chart-container { position: relative; width: 100%; max-width: 720px; margin: 0 auto; height: 340px; }
+    .chart-container-horizontal { position: relative; width: 100%; max-width: 760px; margin: 0 auto; height: 260px; }
+    .chart-container-timeline { position: relative; width: 100%; max-width: 860px; margin: 0 auto; height: 320px; }
+
+    /* Compact one-pass */
+    body.compact header { position: static; }
+    body.compact .section { padding-top: 1.25rem !important; padding-bottom: 1.25rem !important; }
+    body.compact h1 { font-size: 1.5rem !important; }
+    body.compact h2 { font-size: 1.25rem !important; margin-bottom: .5rem !important; }
+    body.compact h3 { font-size: 1.125rem !important; }
+    body.compact p, body.compact li, body.compact div { font-size: .95rem; line-height: 1.45; }
+    body.compact .container { padding-left: 0.75rem; padding-right: 0.75rem; }
+    body.compact .chart-container, body.compact .chart-container-horizontal, body.compact .chart-container-timeline { height: 220px; max-width: 100%; }
+    body.compact #mobile-menu, body.compact .desktop-nav { display: none !important; }
+
+    @media (max-width: 767px) {
+      .chart-container, .chart-container-horizontal, .chart-container-timeline { height: 220px; max-width: 100%; }
+    }
+  </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
+  <!-- Header / Nav -->
+  <header class="w-full bg-white/90 backdrop-blur-sm shadow-sm z-50">
+    <nav class="container mx-auto max-w-6xl px-4 flex justify-between items-center h-16">
+      <div class="text-xl font-bold text-teal-700" data-i18n="brand">HDS Singapore</div>
+      <div class="desktop-nav hidden md:flex items-center space-x-2">
+        <a href="#vision" class="nav-link" data-scroll-to="vision" data-i18n="nav.vision">Vision</a>
+        <a href="#challenge" class="nav-link" data-scroll-to="challenge" data-i18n="nav.challenge">Challenge</a>
+        <a href="#solution" class="nav-link" data-scroll-to="solution" data-i18n="nav.solution">Solution</a>
+        <a href="#tech" class="nav-link" data-scroll-to="tech" data-i18n="nav.tech">Tech Deep Dive</a>
+        <a href="#project" class="nav-link" data-scroll-to="project" data-i18n="nav.project">R&D Proposal</a>
+        <a href="#why" class="nav-link" data-scroll-to="why" data-i18n="nav.why">Why HDS</a>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="summary-toggle" class="px-2.5 py-1.5 rounded-lg border border-teal-200 text-teal-700 text-sm bg-teal-50 hover:border-teal-400" data-i18n="ui.summary">Summary</button>
+        <button id="lang-toggle" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400">EN / 中文</button>
+        <button id="compact-toggle" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400" data-i18n="ui.compact">Compact</button>
+        <button id="mobile-menu-btn" class="md:hidden text-stone-700 p-2" aria-label="Open menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+      </div>
+    </nav>
+    <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute top-16 left-0 w-full z-40">
+      <a href="#vision" data-scroll-to="vision" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.vision">Vision</a>
+      <a href="#challenge" data-scroll-to="challenge" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.challenge">Challenge</a>
+      <a href="#solution" data-scroll-to="solution" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.solution">Solution</a>
+      <a href="#tech" data-scroll-to="tech" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.tech">Tech Deep Dive</a>
+      <a href="#project" data-scroll-to="project" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.project">R&D Proposal</a>
+      <a href="#why" data-scroll-to="why" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-i18n="nav.why">Why HDS</a>
+    </div>
+  </header>
 
-    <header class="sticky top-0 w-full bg-white/90 backdrop-blur-sm shadow-sm z-50">
-        <nav class="container mx-auto max-w-6xl px-4 flex justify-between items-center h-20">
-            <div class="text-2xl font-bold text-teal-700" data-lang-key="logo">
-                HDS Singapore
-            </div>
-            <div class="hidden md:flex items-center space-x-2">
-                <a href="#vision" data-scroll-to="vision" class="nav-link" data-lang-key="navVision">Vision</a>
-                <a href="#challenge" data-scroll-to="challenge" class="nav-link" data-lang-key="navChallenge">Challenge</a>
-                <a href="#solution" data-scroll-to="solution" class="nav-link" data-lang-key="navSolution">Solution</a>
-                <a href="#tech" data-scroll-to="tech" class="nav-link" data-lang-key="navTech">Tech Deep Dive</a>
-                <a href="#project" data-scroll-to="project" class="nav-link" data-lang-key="navProject">R&D Proposal</a>
-                <a href="#why" data-scroll-to="why" class="nav-link" data-lang-key="navWhy">Why HDS</a>
-                <button id="lang-toggle" class="nav-link font-medium" data-lang-key="toggleZh">中文</button>
-            </div>
-            <div class="md:hidden">
-                <button id="mobile-menu-btn" class="text-stone-700 p-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
-            </div>
-        </nav>
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute top-20 left-0 w-full z-40">
-            <a href="#vision" data-scroll-to="vision" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navVision">Vision</a>
-            <a href="#challenge" data-scroll-to="challenge" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navChallenge">Challenge</a>
-            <a href="#solution" data-scroll-to="solution" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navSolution">Solution</a>
-            <a href="#tech" data-scroll-to="tech" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navTech">Tech Deep Dive</a>
-            <a href="#project" data-scroll-to="project" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navProject">R&D Proposal</a>
-            <a href="#why" data-scroll-to="why" class="block px-5 py-3 text-stone-700 hover:bg-teal-50" data-lang-key="navWhy">Why HDS</a>
-            <a href="#" id="lang-toggle-mobile" class="block px-5 py-3 text-stone-700 hover:bg-teal-50 font-medium" data-lang-key="toggleZh">中文</a>
+  <!-- SUMMARY (single) -->
+  <section id="summaryPanel" class="hidden fixed inset-0 z-[60] bg-white overflow-auto">
+    <div class="container mx-auto max-w-6xl px-4 py-6 min-h-[100svh] flex flex-col justify-center">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-lg font-semibold text-teal-700" data-i18n="summary.title">HDS Zenith — One‑Screen Summary</div>
+        <button id="closeSummary" class="px-2.5 py-1.5 rounded-lg border border-stone-300 text-sm hover:border-teal-400" aria-label="Close">✕</button>
+      </div>
+      <h1 class="text-2xl md:text-4xl font-bold text-teal-700 mb-2" data-i18n="vision.h1">HDS Singapore</h1>
+      <p class="text-base md:text-xl text-stone-700 mb-4" data-i18n="vision.tagline">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.green">Green DC</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.tropical">Tropical Ready</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.aiops">AIOps</span>
+        <span class="px-2 py-1 rounded-full border border-stone-300 text-xs" data-i18n="summary.badge.rapid">Rapid Deploy</span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>⚡</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi1.l">Full‑year PUE</div><div class="font-bold"><span><1.15</span></div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🧊</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi2.l">Rack Density</div><div class="font-bold">200kW / rack</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>📦</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi3.l">Space Utilization</div><div class="font-bold">+50%</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🏗️</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi4.l">External Footprint</div><div class="font-bold">-60%</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🗓️</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi5.l">Roadmap</div><div class="font-bold">6 Quarters</div></div></div>
+        <div class="flex items-center gap-2 p-2 rounded-lg border border-slate-200"><span>🤖</span><div><div class="text-stone-500 text-[11px]" data-i18n="summary.kpi6.l">Ops Platform</div><div class="font-bold" data-i18n="summary.kpi6.v">Hardware‑agnostic AIOps</div></div></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col1.t">Zenith‑Cool</div><div class="text-sm" data-i18n="summary.col1.d">Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.</div></div>
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col2.t">Zenith‑Deploy</div><div class="text-sm" data-i18n="summary.col2.d">2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.</div></div>
+        <div class="bg-white border rounded-lg p-3"><div class="font-semibold text-teal-700 mb-1" data-i18n="summary.col3.t">Zenith‑Ops</div><div class="text-sm" data-i18n="summary.col3.d">Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).</div></div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <a href="#project" data-scroll-to="project" class="px-3 py-2 rounded-lg text-center bg-teal-700 text-white" data-i18n="summary.cta.project" role="button">View R&D KPIs</a>
+        <a href="#tech" data-scroll-to="tech" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" data-i18n="summary.cta.tech" role="button">See Tech Details</a>
+        <a href="#why" data-scroll-to="why" class="px-3 py-2 rounded-lg text-center border border-teal-700 text-teal-700" data-i18n="summary.cta.why" role="button">Why HDS</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main>
+    <section id="vision" class="section pt-12 pb-10 bg-white">
+      <div class="container mx-auto max-w-6xl px-6 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold text-teal-700 mb-3" data-i18n="vision.h1">HDS Singapore</h1>
+        <p class="text-xl md:text-3xl font-medium text-stone-800 mb-4" data-i18n="vision.tagline">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
+        <p class="text-base md:text-lg text-stone-600 max-w-3xl mx-auto" data-i18n="vision.desc">We engineer next‑gen Micro‑Module Data Centers (MDC) tailored to Singapore's thermodynamic and spatial constraints.</p>
+      </div>
+    </section>
+
+    <section id="challenge" class="section py-12">
+      <div class="container mx-auto max-w-6xl px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-8" data-i18n="challenge.h2">Singapore's Unique Challenges</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c1.title">1. Exponential Compute Density</h3><p class="text-stone-600" data-i18n="challenge.c1.desc">AI/ML workloads push >50kW racks, beyond conventional air cooling limits.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c2.title">2. Ambient Thermodynamic Constraints</h3><p class="text-stone-600" data-i18n="challenge.c2.desc">Tropical, high‑humidity climate makes facility cooling a dominant energy load.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="text-lg font-semibold text-teal-700 mb-2" data-i18n="challenge.c3.title">3. Spatiotemporal Constraints</h3><p class="text-stone-600" data-i18n="challenge.c3.desc">Land scarcity and high construction costs demand high spatial efficiency and rapid deployment.</p></div>
         </div>
-    </header>
+      </div>
+    </section>
 
-    <main>
-        <section id="vision" class="pt-24 pb-16 bg-white">
-            <div class="container mx-auto max-w-6xl px-6 text-center">
-                <h1 class="text-4xl md:text-5xl font-bold text-teal-700 mb-6" data-lang-key="heroTitle">HDS Singapore</h1>
-                <p class="text-2xl md:text-3xl font-medium text-stone-800 mb-8" data-lang-key="heroSubtitle">Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure</p>
-                <p class="text-lg text-stone-600 max-w-3xl mx-auto" data-lang-key="heroDesc">
-                    We are dedicated to engineering and delivering next-generation Micro-Module Data Center (MDC) solutions, integrating advanced hybrid thermal management and AIOps to meet Singapore's unique thermodynamic and spatial constraints in the AI era.
-                </p>
-            </div>
-        </section>
-
-        <section id="challenge" class="py-20">
-            <div class="container mx-auto max-w-6xl px-6">
-                <h2 class="text-3xl font-bold text-center mb-12" data-lang-key="challengeTitle">Singapore's Unique Challenges</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="challenge1Title">1. Exponential Compute Density</h3>
-                        <p class="text-stone-600" data-lang-key="challenge1Desc">The proliferation of AI/ML workloads is causing exponential growth in rack power density (>50kW), exceeding the thermal dissipation limits of conventional air-cooling architectures.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="challenge2Title">2. Ambient Thermodynamic Constraints</h3>
-                        <p class="text-stone-600" data-lang-key="challenge2Desc">Singapore's tropical, high-humidity climate makes facility cooling (PUE) a primary energy load, posing a significant barrier to achieving national Green Data Center objectives.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="challenge3Title">3. Spatiotemporal Constraints</h3>
-                        <p class="text-stone-600" data-lang-key="challenge3Desc">Limited land and high construction costs necessitate solutions with high spatial efficiency, rapid deployment velocity, and superior operational economics.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="solution" class="py-20 bg-white">
-            <div class="container mx-auto max-w-6xl px-6">
-                <h2 class="text-3xl font-bold text-center mb-6" data-lang-key="solutionTitle">Our Solution: The HDS "Zenith" Series Micro-Module</h2>
-                <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12" data-lang-key="solutionDesc">
-                    The HDS "Zenith" is a highly integrated, intelligent MDC platform engineered to solve the core challenges of density, efficiency, and deployment velocity. It's built on three core pillars:
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200">
-                        <span class="text-4xl">❄️</span>
-                        <h3 class="text-2xl font-semibold text-teal-700 my-3" data-lang-key="pillar1Title">Zenith-Cool (Optimized Thermal Management)</h3>
-                        <p class="text-stone-600" data-lang-key="pillar1Desc">Utilizes an innovative hybrid cooling architecture, combining biphasic thermosyphon technology with liquid cooling on-demand to achieve extreme PUE in tropical climates.</p>
-                    </div>
-                    <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200">
-                        <span class="text-4xl">📦</span>
-                        <h3 class="text-2xl font-semibold text-teal-700 my-3" data-lang-key="pillar2Title">Zenith-Deploy (Scalable & Rapid Architecture)</h3>
-                        <p class="text-stone-600" data-lang-key="pillar2Desc">Modular, high-density design improves space utilization by 50%. Deployable with a 2.4m ceiling height and features intelligent busbars to increase rack U-space by 10%.</p>
-                    </div>
-                    <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200">
-                        <span class="text-4xl">🤖</span>
-                        <h3 class="text-2xl font-semibold text-teal-700 my-3" data-lang-key="pillar3Title">Zenith-Ops (Predictive AIOps)</h3>
-                        <p class="text-stone-600" data-lang-key="pillar3Desc">AI-driven dynamic thermal balancing and energy matching. Centralized monitoring via a unified data collector for intelligent asset management and predictive failure analysis.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="tech" class="py-20">
-            <div class="container mx-auto max-w-6xl px-6">
-                <h2 class="text-3xl font-bold text-center mb-12" data-lang-key="techTitle">Tech Deep Dive</h2>
-                
-                <div id="tech-toggles" class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-12">
-                    <button data-target="tech-content-cool" class="tech-toggle-btn tech-toggle-btn-active" data-lang-key="techTab1">
-                        ❄️ Zenith-Cool
-                    </button>
-                    <button data-target="tech-content-deploy" class="tech-toggle-btn tech-toggle-btn-inactive" data-lang-key="techTab2">
-                        📦 Zenith-Deploy
-                    </button>
-                    <button data-target="tech-content-ops" class="tech-toggle-btn tech-toggle-btn-inactive" data-lang-key="techTab3">
-                        🤖 Zenith-Ops
-                    </button>
-                </div>
-
-                <div id="tech-contents" class="bg-white p-8 rounded-lg shadow-xl border border-stone-200">
-                    
-                    <div id="tech-content-cool" class="tech-content-pane">
-                        <h3 class="text-2xl font-semibold text-teal-700 mb-6" data-lang-key="coolTitle">Zenith-Cool: A Paradigmatic Shift in Tropical Thermal Management</h3>
-                        <p class="text-stone-600 mb-8" data-lang-key="coolDesc">
-                            Our core is the 'Tropic-Hybrid' cooling system. It dynamically coordinates multiple thermal technologies for optimal efficiency across all load scenarios.
-                        </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                            <div>
-                                <h4 class="text-lg font-semibold mb-2" data-lang-key="coolSub1Title">1. Biphasic Thermosyphon Economization (XFreecooling)</h4>
-                                <p class="text-stone-600" data-lang-key="coolSub1Desc">Leverages patented pneumatic heat-pipe (biphasic thermosyphon) technology to maximize natural economization, achieving 40-70% in cooling energy savings. An AI algorithm intelligently manages operating modes for year-round optimization.</p>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-semibold mb-2" data-lang-key="coolSub2Title">2. Full-Chain Direct Liquid Cooling (DLC) On-Demand</h4>
-                                <p class="text-stone-600" data-lang-key="coolSub2Desc">For >50kW AI racks, we seamlessly integrate cold-plate or immersion DLC units. We possess full-chain IP from quick-connectors and CDUs to cold plates, supporting ultra-high thermal densities up to 200kW per rack.</p>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="pueChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div id="tech-content-deploy" class="tech-content-pane hidden">
-                        <h3 class="text-2xl font-semibold text-teal-700 mb-6" data-lang-key="deployTitle">Zenith-Deploy: Optimizing Spatiotemporal Deployment Efficiency</h3>
-                        <p class="text-stone-600 mb-8" data-lang-key="deployDesc">
-                            In a high-cost environment, maximizing spatial and temporal efficiency is paramount.
-                        </p>
-                        <ul class="space-y-4 text-stone-700 mb-8">
-                            <li class="flex items-start">
-                                <span class="text-teal-600 font-bold text-xl mr-3">✔</span>
-                                <div data-lang-key="deployPt1"><strong>+50% Space Utilization:</strong> Integrated, slab-on-grade design (no raised floor) with horizontal airflow. A minimal 2.4m ceiling height requirement dramatically reduces site selection constraints.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-teal-600 font-bold text-xl mr-3">✔</span>
-                                <div data-lang-key="deployPt2"><strong>+10% Compute Density:</strong> Intelligent busbars replace traditional PDUs, freeing valuable U-space for compute hardware.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-teal-600 font-bold text-xl mr-3">✔</span>
-                                <div data-lang-key="deployPt3"><strong>-60% External Footprint:</strong> Centralized, high-efficiency outdoor heat rejection units minimize the external plant footprint and reduce acoustic emissions by >5dB.</div>
-                            </li>
-                        </ul>
-                        <div class="chart-container-horizontal">
-                            <canvas id="deployChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div id="tech-content-ops" class="tech-content-pane hidden">
-                        <h3 class="text-2xl font-semibold text-teal-700 mb-6" data-lang-key="opsTitle">Zenith-Ops: AIOps for Predictive Uptime & Optimization</h3>
-                        <p class="text-stone-600 mb-8" data-lang-key="opsDesc">
-                            We are building a "self-aware, self-diagnosing, self-optimizing" data center, moving from reactive maintenance to predictive optimization.
-                        </p>
-                        
-                        <h4 class="text-xl font-semibold text-center mb-6" data-lang-key="opsLoopTitle">The AIOps Predictive Loop</h4>
-                        <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center">
-                            <div class="p-4 bg-stone-100 rounded-lg shadow-sm w-48">
-                                <h5 class="font-semibold text-teal-700" data-lang-key="opsLoop1Title">1. MONITOR</h5>
-                                <p class="text-sm text-stone-600" data-lang-key="opsLoop1Desc">Real-time sensor data aggregation (thermal, power, flow)</p>
-                            </div>
-                            <div class="text-2xl font-bold text-stone-400 transform md:rotate-0">→</div>
-                            <div class="p-4 bg-stone-100 rounded-lg shadow-sm w-48">
-                                <h5 class="font-semibold text-teal-700" data-lang-key="opsLoop2Title">2. ANALYZE</h5>
-                                <p class="text-sm text-stone-600" data-lang-key="opsLoop2Desc">AI models detect anomalies & performance deviations</p>
-                            </div>
-                            <div class="text-2xl font-bold text-stone-400 transform md:rotate-0">→</div>
-                            <div class="p-4 bg-stone-100 rounded-lg shadow-sm w-48">
-                                <h5 class="font-semibold text-teal-700" data-lang-key="opsLoop3Title">3. PREDICT</h5>
-                                <p class="text-sm text-stone-600" data-lang-key="opsLoop3Desc">Forecast failures, thermal risks, & optimization opportunities</p>
-                            </div>
-                            <div class="text-2xl font-bold text-stone-400 transform md:rotate-0">→</div>
-                            <div class="p-4 bg-stone-100 rounded-lg shadow-sm w-48">
-                                <h5 class="font-semibold text-teal-700" data-lang-key="opsLoop4Title">4. ACTUATE</h5>
-                                <p class="text-sm text-stone-600" data-lang-key="opsLoop4Desc">Dynamically adjust cooling & power parameters; create work orders</p>
-                            </div>
-                        </div>
-                        
-                        <ul class="space-y-4 text-stone-700 mt-8">
-                            <li class="flex items-start">
-                                <span class="text-teal-600 font-bold text-xl mr-3">✔</span>
-                                <div data-lang-key="opsPt1"><strong>AI Dynamic Thermal Management:</strong> AI algorithms analyze IT load topography and thermodynamics to dynamically adjust cooling output, eliminating "over-cooling" and minimizing energy use.</div>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-teal-600 font-bold text-xl mr-3">✔</span>
-                                <div data-lang-key="opsPt2"><strong>Unified Visibility:</strong> A single, integrated data collector provides 3D visualization, asset tracking, and holistic management for multiple modules.</div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="project" class="py-20 bg-teal-800 text-white">
-            <div class="container mx-auto max-w-6xl px-6">
-                <h2 class="text-3xl font-bold text-center mb-6" data-lang-key="projectTitle">R&D Proposal: The "Tropic-AI" Micro-Module</h2>
-                <p class="text-lg text-teal-100 text-center max-w-3xl mx-auto mb-12" data-lang-key="projectDesc">
-                    We are seeking (VC/Government) support to launch the 'Tropic-AI' Micro-Module R&D project. This project aims to optimize and validate our 'Zenith' platform for the Singaporean climate, setting a new global benchmark for tropical data center efficiency.
-                </p>
-                <h3 class="text-2xl font-semibold text-center text-white mb-8" data-lang-key="kpiTitle">Key Project Deliverables (KPIs)</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="bg-teal-700 p-6 rounded-lg shadow-lg">
-                        <h4 class="text-xl font-bold mb-3" data-lang-key="kpi1Title">KPI 1: Sub-1.15 PUE Validation</h4>
-                        <p class="text-teal-100" data-lang-key="kpi1Desc">Achieve and validate a full-year, real-world PUE of <strong>less than 1.15</strong> in a live Singapore (ASHRAE Tropical) environment.</p>
-                    </div>
-                    <div class="bg-teal-700 p-6 rounded-lg shadow-lg">
-                        <h4 class="text-xl font-bold mb-3" data-lang-key="kpi2Title">KPI 2: 200kW+ Rack Density Validation</h4>
-                        <p class="text-teal-100" data-lang-key="kpi2Desc">Develop and certify a commercially viable <strong>200kW per-rack</strong> full Direct Liquid Cooling (DLC) solution, future-proofed for next-gen AI accelerators.</p>
-                    </div>
-                    <div class="bg-teal-700 p-6 rounded-lg shadow-lg">
-                        <h4 class="text-xl font-bold mb-3" data-lang-key="kpi3Title">KPI 3: Heterogeneous Cooling Platform</h4>
-                        <p class="text-teal-100" data-lang-key="kpi3Desc">Deliver an advanced, hardware-agnostic AIOps platform capable of unifying the management and optimization of heterogeneous cooling (air, liquid, hybrid) environments.</p>
-                    </div>
-                </div>
-                
-                <div class="chart-container-timeline bg-teal-700 p-4 rounded-lg mt-16">
-                    <canvas id="timelineChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section id="why" class="py-20">
-            <div class="container mx-auto max-w-6xl px-6">
-                <h2 class="text-3xl font-bold text-center mb-12" data-lang-key="whyTitle">Why Choose HDS Singapore?</h2>
-                <p class="text-lg text-stone-600 text-center max-w-3xl mx-auto mb-12" data-lang-key="whyDesc">
-                    We are not just an equipment vendor; we are a full-chain engineering, delivery, and R&D partner. Our competitive moat is built on:
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="moat1Title">1. Vertically Integrated Technology</h3>
-                        <p class="text-stone-600" data-lang-key="moat1Desc">Full-stack in-house R&D and IP, from core thermal components (cold plates, quick-connectors) to complete systems (CDUs, racks) and AIOps software.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="moat2Title">2. Validated UHD Capability</h3>
-                        <p class="text-stone-600" data-lang-key="moat2Desc">We have commercially-ready 200kW+ Direct Liquid Cooling solutions, directly addressing the challenge of future ultra-high density AI compute.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="moat3Title">3. Turnkey ECP Execution</h3>
-                        <p class="text-stone-600" data-lang-key="moat3Desc">We provide a one-stop 'turnkey' (ECP) solution covering racks, power, cabling, cooling, and operations, de-risking project management for our clients.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-xl font-semibold text-teal-700 mb-3" data-lang-key="moat4Title">4. 'Glocalized' R&D Partner</h3>
-                        <p class="text-stone-600" data-lang-key="moat4Desc">Based in Singapore, we deeply understand local standards. We combine global delivery experience with a local R&D ecosystem to ensure project success.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-stone-800 text-stone-300 py-12">
-        <div class="container mx-auto max-w-6xl px-6 text-center">
-            <p class="text-lg font-semibold mb-2" data-lang-key="footerTitle">HDS Singapore</p>
-            <p class="text-sm" data-lang-key="footerSubtitle">&copy; 2025 HDS Singapore Pte. Ltd. | Powering the Future of Green Compute</p>
+    <section id="solution" class="section py-12 bg-white">
+      <div class="container mx-auto max-w-6xl px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="solution.h2">Our Solution: The HDS "Zenith" Series Micro‑Module</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">❄️</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p1.title">Zenith‑Cool</h3><p class="text-stone-600" data-i18n="solution.p1.desc">Hybrid cooling (thermosyphon + DLC on‑demand) achieves extreme PUE in tropics.</p></div>
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">📦</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p2.title">Zenith‑Deploy</h3><p class="text-stone-600" data-i18n="solution.p2.desc">2.4m ceiling, slab‑on‑grade; busbars free U‑space: +50% space, −60% footprint.</p></div>
+          <div class="text-center p-6 bg-stone-50 rounded-lg border border-stone-200"><span class="text-4xl">🤖</span><h3 class="text-xl font-semibold text-teal-700 my-2" data-i18n="solution.p3.title">Zenith‑Ops</h3><p class="text-stone-600" data-i18n="solution.p3.desc">AIOps for dynamic thermal balancing, unified monitoring, predictive failure.</p></div>
         </div>
-    </footer>
+      </div>
+    </section>
 
-    <script>
-        const contentStore = {
-            en: {
-                docTitle: "HDS Singapore - Technology Proposal",
-                logo: "HDS Singapore",
-                navVision: "Vision",
-                navChallenge: "Challenge",
-                navSolution: "Solution",
-                navTech: "Tech Deep Dive",
-                navProject: "R&D Proposal",
-                navWhy: "Why HDS",
-                toggleZh: "中文",
-                toggleEn: "English",
-                heroTitle: "HDS Singapore",
-                heroSubtitle: "Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure",
-                heroDesc: "We are dedicated to engineering and delivering next-generation Micro-Module Data Center (MDC) solutions, integrating advanced hybrid thermal management and AIOps to meet Singapore's unique thermodynamic and spatial constraints in the AI era.",
-                challengeTitle: "Singapore's Unique Challenges",
-                challenge1Title: "1. Exponential Compute Density",
-                challenge1Desc: "The proliferation of AI/ML workloads is causing exponential growth in rack power density (>50kW), exceeding the thermal dissipation limits of conventional air-cooling architectures.",
-                challenge2Title: "2. Ambient Thermodynamic Constraints",
-                challenge2Desc: "Singapore's tropical, high-humidity climate makes facility cooling (PUE) a primary energy load, posing a significant barrier to achieving national Green Data Center objectives.",
-                challenge3Title: "3. Spatiotemporal Constraints",
-                challenge3Desc: "Limited land and high construction costs necessitate solutions with high spatial efficiency, rapid deployment velocity, and superior operational economics.",
-                solutionTitle: "Our Solution: The HDS \"Zenith\" Series Micro-Module",
-                solutionDesc: "The HDS \"Zenith\" is a highly integrated, intelligent MDC platform engineered to solve the core challenges of density, efficiency, and deployment velocity. It's built on three core pillars:",
-                pillar1Title: "Zenith-Cool (Optimized Thermal Management)",
-                pillar1Desc: "Utilizes an innovative hybrid cooling architecture, combining biphasic thermosyphon technology with liquid cooling on-demand to achieve extreme PUE in tropical climates.",
-                pillar2Title: "Zenith-Deploy (Scalable & Rapid Architecture)",
-                pillar2Desc: "Modular, high-density design improves space utilization by 50%. Deployable with a 2.4m ceiling height and features intelligent busbars to increase rack U-space by 10%.",
-                pillar3Title: "Zenith-Ops (Predictive AIOps)",
-                pillar3Desc: "AI-driven dynamic thermal balancing and energy matching. Centralized monitoring via a unified data collector for intelligent asset management and predictive failure analysis.",
-                techTitle: "Tech Deep Dive",
-                techTab1: "❄️ Zenith-Cool",
-                techTab2: "📦 Zenith-Deploy",
-                techTab3: "🤖 Zenith-Ops",
-                coolTitle: "Zenith-Cool: A Paradigmatic Shift in Tropical Thermal Management",
-                coolDesc: "Our core is the 'Tropic-Hybrid' cooling system. It dynamically coordinates multiple thermal technologies for optimal efficiency across all load scenarios.",
-                coolSub1Title: "1. Biphasic Thermosyphon Economization (XFreecooling)",
-                coolSub1Desc: "Leverages patented pneumatic heat-pipe (biphasic thermosyphon) technology to maximize natural economization, achieving 40-70% in cooling energy savings. An AI algorithm intelligently manages operating modes for year-round optimization.",
-                coolSub2Title: "2. Full-Chain Direct Liquid Cooling (DLC) On-Demand",
-                coolSub2Desc: "For >50kW AI racks, we seamlessly integrate cold-plate or immersion DLC units. We possess full-chain IP from quick-connectors and CDUs to cold plates, supporting ultra-high thermal densities up to 200kW per rack.",
-                deployTitle: "Zenith-Deploy: Optimizing Spatiotemporal Deployment Efficiency",
-                deployDesc: "In a high-cost environment, maximizing spatial and temporal efficiency is paramount.",
-                deployPt1: "<strong>+50% Space Utilization:</strong> Integrated, slab-on-grade design (no raised floor) with horizontal airflow. A minimal 2.4m ceiling height requirement dramatically reduces site selection constraints.",
-                deployPt2: "<strong>+10% Compute Density:</strong> Intelligent busbars replace traditional PDUs, freeing valuable U-space for compute hardware.",
-                deployPt3: "<strong>-60% External Footprint:</strong> Centralized, high-efficiency outdoor heat rejection units minimize the external plant footprint and reduce acoustic emissions by >5dB.",
-                opsTitle: "Zenith-Ops: AIOps for Predictive Uptime & Optimization",
-                opsDesc: "We are building a \"self-aware, self-diagnosing, self-optimizing\" data center, moving from reactive maintenance to predictive optimization.",
-                opsLoopTitle: "The AIOps Predictive Loop",
-                opsLoop1Title: "1. MONITOR",
-                opsLoop1Desc: "Real-time sensor data aggregation (thermal, power, flow)",
-                opsLoop2Title: "2. ANALYZE",
-                opsLoop2Desc: "AI models detect anomalies & performance deviations",
-                opsLoop3Title: "3. PREDICT",
-                opsLoop3Desc: "Forecast failures, thermal risks, & optimization opportunities",
-                opsLoop4Title: "4. ACTUATE",
-                opsLoop4Desc: "Dynamically adjust cooling & power parameters; create work orders",
-                opsPt1: "<strong>AI Dynamic Thermal Management:</strong> AI algorithms analyze IT load topography and thermodynamics to dynamically adjust cooling output, eliminating \"over-cooling\" and minimizing energy use.",
-                opsPt2: "<strong>Unified Visibility:</strong> A single, integrated data collector provides 3D visualization, asset tracking, and holistic management for multiple modules.",
-                projectTitle: "R&D Proposal: The \"Tropic-AI\" Micro-Module",
-                projectDesc: "We are seeking (VC/Government) support to launch the 'Tropic-AI' Micro-Module R&D project. This project aims to optimize and validate our 'Zenith' platform for the Singaporean climate, setting a new global benchmark for tropical data center efficiency.",
-                kpiTitle: "Key Project Deliverables (KPIs)",
-                kpi1Title: "KPI 1: Sub-1.15 PUE Validation",
-                kpi1Desc: "Achieve and validate a full-year, real-world PUE of <strong>less than 1.15</strong> in a live Singapore (ASHRAE Tropical) environment.",
-                kpi2Title: "KPI 2: 200kW+ Rack Density Validation",
-                kpi2Desc: "Develop and certify a commercially viable <strong>200kW per-rack</strong> full Direct Liquid Cooling (DLC) solution, future-proofed for next-gen AI accelerators.",
-                kpi3Title: "KPI 3: Heterogeneous Cooling Platform",
-                kpi3Desc: "Deliver an advanced, hardware-agnostic AIOps platform capable of unifying the management and optimization of heterogeneous cooling (air, liquid, hybrid) environments.",
-                whyTitle: "Why Choose HDS Singapore?",
-                whyDesc: "We are not just an equipment vendor; we are a full-chain engineering, delivery, and R&D partner. Our competitive moat is built on:",
-                moat1Title: "1. Vertically Integrated Technology",
-                moat1Desc: "Full-stack in-house R&D and IP, from core thermal components (cold plates, quick-connectors) to complete systems (CDUs, racks) and AIOps software.",
-                moat2Title: "2. Validated UHD Capability",
-                moat2Desc: "We have commercially-ready 200kW+ Direct Liquid Cooling solutions, directly addressing the challenge of future ultra-high density AI compute.",
-                moat3Title: "3. Turnkey ECP Execution",
-                moat3Desc: "We provide a one-stop 'turnkey' (ECP) solution covering racks, power, cabling, cooling, and operations, de-risking project management for our clients.",
-                moat4Title: "4. 'Glocalized' R&D Partner",
-                moat4Desc: "Based in Singapore, we deeply understand local standards. We combine global delivery experience with a local R&D ecosystem to ensure project success.",
-                footerTitle: "HDS Singapore",
-                footerSubtitle: "© 2025 HDS Singapore Pte. Ltd. | Powering the Future of Green Compute",
-                charts: {
-                    pue: {
-                        title: "Energy Efficiency (PUE) Benchmark",
-                        yLabel: "PUE Value",
-                        label: "PUE (Power Usage Effectiveness - Lower is Better)",
-                        bar1: "Traditional Data Center (Air-Cooled)",
-                        bar2: "HDS Zenith (Hybrid-Cooled)"
-                    },
-                    deploy: {
-                        title: "Spatial Efficiency Gains",
-                        xLabel: "Relative Index (%)",
-                        label1: "Traditional DC",
-                        label2: "HDS Zenith (+50% Util, -60% Footprint)",
-                        yLabel1: "Space Efficiency Index (Higher is Better)",
-                        yLabel2: "Facility Footprint Index (Lower is Better)"
-                    },
-                    timeline: {
-                        title: "Proposed Project Roadmap (6 Quarters)",
-                        xLabel: "Project Quarters (Q)",
-                        yLabel1: "Phase 3: Live Validation & PUE Testing",
-                        yLabel2: "Phase 2: Prototype & Integration",
-                        yLabel3: "Phase 1: Foundational R&D",
-                        tooltipLabel: "Project Quarters",
-                        tooltipPrefix: " Q"
-                    }
-                }
-            },
-            zh: {
-                docTitle: "HDS Singapore - 技术提案",
-                logo: "HDS Singapore",
-                navVision: "愿景",
-                navChallenge: "市场挑战",
-                navSolution: "HDS 解决方案",
-                navTech: "技术深度解析",
-                navProject: "研发项目提案",
-                navWhy: "为何选择 HDS",
-                toggleZh: "中文",
-                toggleEn: "English",
-                heroTitle: "HDS Singapore",
-                heroSubtitle: "赋能新加坡的未来：构建绿色、高效、智能的AI算力基础设施",
-                heroDesc: "我们致力于研发与交付下一代微模块数据中心（MDC）解决方案，融合先进的混合制冷技术与AI运维，以应对新加坡在AI时代面临的独特能效与空间挑战。",
-                challengeTitle: "新加坡面临的独特挑战",
-                challenge1Title: "1. AI 算力激增",
-                challenge1Desc: "AI 和机器学习的广泛应用导致单机柜功率密度急剧上升（>50kW），远超传统风冷数据中心的散热能力极限。",
-                challenge2Title: "2. 严苛的气候条件",
-                challenge2Desc: "新加坡地处热带，常年高温高湿。这使得数据中心制冷（PUE）成为主要的能耗单元，对实现国家绿色数据中心目标构成重大障碍。",
-                challenge3Title: "3. 空间与部署限制",
-                challenge3Desc: "有限的土地资源和高昂的建设成本要求数据中心解决方案必须具备高空间利用率、部署灵活且运维高效的特点。",
-                solutionTitle: "我们的解决方案：HDS \"Zenith\" 系列微模块",
-                solutionDesc: "HDS \"Zenith\" 系列是一个高度集成的智能微模块数据中心平台，专为解决高密度、高能效和快速部署的核心痛点而设计。它围绕三大核心理念构建：",
-                pillar1Title: "Zenith-Cool (高效制冷)",
-                pillar1Desc: "采用创新的混合制冷架构，结合气动热管与按需液冷技术，在热带环境中实现极致PUE。",
-                pillar2Title: "Zenith-Deploy (灵活部署)",
-                pillar2Desc: "模块化设计，空间利用率提升50%，最低2.4m层高即可部署，支持智能母线，上柜率提升10%。",
-                pillar3Title: "Zenith-Ops (智能运维)",
-                pillar3Desc: "基于AI算法的动态均温与能耗匹配，单一采集器集中监管，实现智能化的资产追踪与故障预警。",
-                techTitle: "技术深度解析",
-                techTab1: "❄️ Zenith-Cool",
-                techTab2: "📦 Zenith-Deploy",
-                techTab3: "🤖 Zenith-Ops",
-                coolTitle: "Zenith-Cool：热带环境下的制冷革命",
-                coolDesc: "我们的核心是 \"Tropic-Hybrid\" 混合制冷系统。它不依赖单一技术，而是智能协同，实现全场景能效最优。",
-                coolSub1Title: "1. 气动热管自然冷却 (XFreecooling)",
-                coolSub1Desc: "利用独家专利的气动热管技术，在室外温差适宜时高效利用自然冷源，可实现 40% 至 70% 的制冷节能。AI 算法智能匹配运行模式，确保全年高效。",
-                coolSub2Title: "2. 按需液冷（全链条液冷）",
-                coolSub2Desc: "针对 >50kW 的 AI 机柜，无缝集成冷板式或浸没式液冷单元。我们具备从快速连接器、CDU 到液冷板的全链条技术，支持单机柜 200kW 的超高热密度散热。",
-                deployTitle: "Zenith-Deploy：最大化空间与时间效率",
-                deployDesc: "在空间即成本的新加坡，快速、灵活、高密度的部署是关键。",
-                deployPt1: "<strong>空间利用率提升 50%：</strong> 一体化集成设计，无需架高地板，水平送风，模块高度可低至 2.4m，极大降低选址难度。",
-                deployPt2: "<strong>上柜率提升 10%：</strong> 采用智能母线替代传统PDU，释放宝贵的机柜U空间，用于部署更多算力设备。",
-                deployPt3: "<strong>占地面积节省 60%：</strong> 集中式室外机制冷单元设计，显著减少室外机占地，并实现降噪 5dB 以上。",
-                opsTitle: "Zenith-Ops：AI 驱动的智能运维",
-                opsDesc: "我们的目标是构建一个“自感知、自诊断、自优化”的数据中心大脑。",
-                opsLoopTitle: "AIOps 智能运维闭环",
-                opsLoop1Title: "1. 监测",
-                opsLoop1Desc: "实时传感器数据聚合（温度、功率、流速）",
-                opsLoop2Title: "2. 分析",
-                opsLoop2Desc: "AI模型检测异常与性能偏差",
-                opsLoop3Title: "3. 预测",
-                opsLoop3Desc: "预测故障、热风险与优化机会",
-                opsLoop4Title: "4. 执行",
-                opsLoop4Desc: "动态调整制冷与电源参数；生成工单",
-                opsPt1: "<strong>AI 动态均温：</strong> AI 算法实时分析IT负载、室内外温度，动态调整制冷输出，在保障安全的同时杜绝“过度制冷”，实现能耗最低。",
-                opsPt2: "<strong>集中监管与视图管理：</strong> 仅需 1 台一体化数据采集器，即可对多套微模块进行集中管理。提供3D可视化视图和资产追踪，简化运维。",
-                projectTitle: "研发项目提案：Tropic-AI 微模块",
-                projectDesc: "我们寻求（VC/政府）支持，启动针对新加坡市场的 \"Tropic-AI\" 微模块研发项目。本项目旨在将我们的 \"Zenith\" 平台进行深度本地化适配与技术突破，打造全球热带数据中心的能效新标杆。",
-                kpiTitle: "项目关键指标 (KPI)",
-                kpi1Title: "KPI 1: 极致 PUE",
-                kpi1Desc: "在新加坡（ASHRAE 热带气候）真实环境中，实现混合制冷微模块全年 PUE <strong>低于 1.15</strong>，树立世界级能效标杆。",
-                kpi2Title: "KPI 2: 超高热密度",
-                kpi2Desc: "研发并验证可商用的单机柜 <strong>200kW</strong> 全液冷散热方案，适配下一代 AI/GPU 服务器，实现算力密度最大化。",
-                kpi3Title: "KPI 3: 硬件无关的 AI 运维",
-                kpi3Desc: "开发一个先进的、与硬件无关的（Hardware-Agnostic）AI 运维平台，能统一管理和优化异构冷却环境（风冷、液冷、混合）。",
-                whyTitle: "为何选择 HDS Singapore？",
-                whyDesc: "我们不仅是设备供应商，更是全链条的工程交付与技术研发伙伴。我们的“护城河”在于：",
-                moat1Title: "1. 全链条技术积累",
-                moat1Desc: "掌握从核心制冷组件（如冷板、快装连接器）到整机系统（CDU、机柜）再到AI控制软件的全栈自研能力。",
-                moat2Title: "2. 高热密度适配力",
-                moat2Desc: "具备支持单柜 200kW 的液冷技术储备与商用方案，直面未来 AI 算力的高密度散热挑战。",
-                moat3Title: "3. 一站式交付能力",
-                moat3Desc: "我们提供从机柜、配电、布线到制冷和运维的“一站式”成套交付方案（ECP），极大简化客户的项目管理与集成难度。",
-                moat4Title: "4. 国际化与本地化",
-                moat4Desc: "立足新加坡，深刻理解本地市场标准与需求，结合国际交付经验与本地生态伙伴，确保项目成功落地。",
-                footerTitle: "HDS Singapore",
-                footerSubtitle: "© 2025 HDS Singapore Pte. Ltd. | 推动绿色算力未来",
-                charts: {
-                    pue: {
-                        title: "能效对比 (PUE)",
-                        yLabel: "PUE 值",
-                        label: "PUE (电力使用效率 - 越低越好)",
-                        bar1: "传统数据中心 (风冷)",
-                        bar2: "HDS Zenith (混合制冷)"
-                    },
-                    deploy: {
-                        title: "空间效率增益",
-                        xLabel: "相对指数 (%)",
-                        label1: "传统数据中心",
-                        label2: "HDS Zenith (+50% 空间, -60% 占地)",
-                        yLabel1: "空间效率指数 (越高越好)",
-                        yLabel2: "设施占地指数 (越低越好)"
-                    },
-                    timeline: {
-                        title: "研发项目路线图 (6个季度)",
-                        xLabel: "项目季度 (Q)",
-                        yLabel1: "阶段 3: 现场验证与PUE测试",
-                        yLabel2: "阶段 2: 原型机与集成",
-                        yLabel3: "阶段 1: 基础研发",
-                        tooltipLabel: "项目季度",
-                        tooltipPrefix: " Q"
-                    }
-                }
-            }
-        };
+    <section id="tech" class="section py-12">
+      <div class="container mx-auto max-w-6xl px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="tech.h2">Tech Deep Dive</h2>
+        <div class="bg-white p-6 rounded-lg border">
+          <h3 class="text-xl font-semibold text-teal-700 mb-3" data-i18n="cool.h3">Zenith‑Cool</h3>
+          <div class="chart-container"><canvas id="pueChart"></canvas></div>
+        </div>
+      </div>
+    </section>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            let currentLang = 'en';
-            const toggleBtn = document.getElementById('lang-toggle');
-            const toggleBtnMobile = document.getElementById('lang-toggle-mobile');
+    <section id="project" class="section py-12 bg-teal-800 text-white">
+      <div class="container mx-auto max-w-6xl px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="project.h2">R&D Proposal: The "Tropic‑AI" Micro‑Module</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi1.t">KPI 1: Sub‑1.15 PUE</h4><p class="text-teal-100" data-i18n="project.kpi1.d">Validate full‑year PUE < 1.15 in Singapore environment.</p></div>
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi2.t">KPI 2: 200kW/rack</h4><p class="text-teal-100" data-i18n="project.kpi2.d">Commercial DLC for ultra‑high density AI racks.</p></div>
+          <div class="bg-teal-700 p-4 rounded-lg"><h4 class="text-lg font-bold mb-1" data-i18n="project.kpi3.t">KPI 3: AIOps</h4><p class="text-teal-100" data-i18n="project.kpi3.d">Hardware‑agnostic platform unifying air/liquid/hybrid cooling.</p></div>
+        </div>
+        <div class="chart-container-timeline bg-teal-700 p-3 rounded-lg mt-6"><canvas id="timelineChart"></canvas></div>
+      </div>
+    </section>
 
-            const initChart = (content) => {
-                const ctx = document.getElementById('pueChart').getContext('2d');
-                if (window.myPueChart) {
-                    window.myPueChart.destroy();
-                }
-                window.myPueChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: [content.bar1, content.bar2],
-                        datasets: [{
-                            label: content.label,
-                            data: [1.45, 1.15],
-                            backgroundColor: [
-                                'rgba(209, 213, 219, 0.7)', 
-                                'rgba(15, 118, 110, 0.7)' 
-                            ],
-                            borderColor: [
-                                'rgba(107, 114, 128, 1)',
-                                'rgba(13, 148, 136, 1)'
-                            ],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                min: 1.0,
-                                title: {
-                                    display: true,
-                                    text: content.yLabel
-                                }
-                            }
-                        },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: content.title,
-                                font: { size: 18 },
-                                padding: { bottom: 20 },
-                                color: '#374151'
-                            },
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        if (context.parsed.y !== null) {
-                                            label += context.parsed.y.toFixed(2);
-                                        }
-                                        return label;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            };
+    <section id="why" class="section py-12">
+      <div class="container mx-auto max-w-6xl px-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6" data-i18n="why.h2">Why Choose HDS Singapore?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c1.t">1. Vertically Integrated Technology</h3><p class="text-stone-600" data-i18n="why.c1.d">Full‑stack IP from cold plates to CDUs, racks, and AIOps.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c2.t">2. Validated UHD Capability</h3><p class="text-stone-600" data-i18n="why.c2.d">Commercial‑ready 200kW+ DLC for next‑gen accelerators.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c3.t">3. Turnkey ECP Execution</h3><p class="text-stone-600" data-i18n="why.c3.d">One‑stop racks, power, cabling, cooling, and ops.</p></div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200"><h3 class="font-semibold text-teal-700 mb-1" data-i18n="why.c4.t">4. 'Glocalized' R&D Partner</h3><p class="text-stone-600" data-i18n="why.c4.d">Singapore‑based with global delivery experience.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-            const initDeployChart = (content) => {
-                const ctx = document.getElementById('deployChart').getContext('2d');
-                if (window.myDeployChart) {
-                    window.myDeployChart.destroy();
-                }
-                window.myDeployChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: [content.yLabel1, content.yLabel2],
-                        datasets: [
-                            {
-                                label: content.label1,
-                                data: [100, 100],
-                                backgroundColor: 'rgba(209, 213, 219, 0.7)',
-                                borderColor: 'rgba(107, 114, 128, 1)',
-                                borderWidth: 2
-                            },
-                            {
-                                label: content.label2,
-                                data: [150, 40],
-                                backgroundColor: 'rgba(15, 118, 110, 0.7)',
-                                borderColor: 'rgba(13, 148, 136, 1)',
-                                borderWidth: 2
-                            }
-                        ]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: content.xLabel
-                                }
-                            }
-                        },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: content.title,
-                                font: { size: 18 },
-                                padding: { bottom: 20 },
-                                color: '#374151'
-                            },
-                            legend: {
-                                position: 'bottom',
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            }
-                        }
-                    }
-                });
-            };
+  <footer class="bg-stone-800 text-stone-300 py-10">
+    <div class="container mx-auto max-w-6xl px-6 text-center">
+      <p class="text-base md:text-lg font-semibold mb-1" data-i18n="brand">HDS Singapore</p>
+      <p class="text-xs md:text-sm"><span data-i18n="footer">Powering the Future of Green Compute</span></p>
+    </div>
+  </footer>
 
-            const initTimelineChart = (content) => {
-                const ctx = document.getElementById('timelineChart').getContext('2d');
-                if (window.myTimelineChart) {
-                    window.myTimelineChart.destroy();
-                }
-                window.myTimelineChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: [content.yLabel1, content.yLabel2, content.yLabel3],
-                        datasets: [{
-                            label: content.tooltipLabel,
-                            data: [
-                                [4, 6], 
-                                [2, 4], 
-                                [0, 2]  
-                            ],
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            borderColor: 'rgba(209, 213, 219, 1)',
-                            borderWidth: 2,
-                            barPercentage: 0.6
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                min: 0,
-                                max: 6,
-                                title: {
-                                    display: true,
-                                    text: content.xLabel,
-                                    color: '#e5e7eb'
-                                },
-                                ticks: {
-                                    color: '#e5e7eb',
-                                    stepSize: 1
-                                },
-                                grid: {
-                                    color: 'rgba(255, 255, 255, 0.2)'
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    color: '#e5e7eb'
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: content.title,
-                                font: { size: 18 },
-                                padding: { bottom: 20 },
-                                color: '#FFFFFF'
-                            },
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const val = context.raw;
-                                        return `${content.tooltipPrefix}${val[0] + 1} - ${content.tooltipPrefix}${val[1]}`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            };
+  <script>
+    /******** i18n ********/
+    const I18N = {
+      en:{
+        brand:'HDS Singapore',
+        'nav.vision':'Vision','nav.challenge':'Challenge','nav.solution':'Solution','nav.tech':'Tech Deep Dive','nav.project':'R&D Proposal','nav.why':'Why HDS',
+        'vision.h1':'HDS Singapore','vision.tagline':"Empowering Singapore's Future: Green, Efficient, and Intelligent AI Compute Infrastructure",'vision.desc':'We engineer next‑gen Micro‑Module Data Centers (MDC) tailored to Singapore\'s thermodynamic and spatial constraints.',
+        'challenge.h2':"Singapore's Unique Challenges",'challenge.c1.title':'1. Exponential Compute Density','challenge.c1.desc':'>50kW racks beyond air cooling limits.','challenge.c2.title':'2. Ambient Thermodynamic Constraints','challenge.c2.desc':'Tropical humidity raises cooling energy load.','challenge.c3.title':'3. Spatiotemporal Constraints','challenge.c3.desc':'Land scarcity requires high spatial efficiency.',
+        'solution.h2':'Our Solution: The HDS "Zenith" Series Micro‑Module','solution.p1.title':'Zenith‑Cool','solution.p1.desc':'Hybrid cooling for extreme PUE.','solution.p2.title':'Zenith‑Deploy','solution.p2.desc':'+50% space, −60% footprint.','solution.p3.title':'Zenith‑Ops','solution.p3.desc':'AIOps with unified monitoring.',
+        'tech.h2':'Tech Deep Dive','cool.h3':'Zenith‑Cool',
+        'project.h2':'R&D Proposal: The "Tropic‑AI" Micro‑Module','project.kpi1.t':'KPI 1: Sub‑1.15 PUE','project.kpi1.d':'Validate full‑year PUE < 1.15.','project.kpi2.t':'KPI 2: 200kW/rack','project.kpi2.d':'Commercial DLC integration.','project.kpi3.t':'KPI 3: AIOps','project.kpi3.d':'Unify air/liquid/hybrid.',
+        'why.h2':'Why Choose HDS Singapore?','why.c1.t':'1. Vertically Integrated Technology','why.c1.d':'Full‑stack IP.','why.c2.t':'2. Validated UHD Capability','why.c2.d':'200kW+ DLC.','why.c3.t':'3. Turnkey ECP Execution','why.c3.d':'One‑stop delivery.','why.c4.t':"4. 'Glocalized' R&D Partner",'why.c4.d':'Local + global.',
+        footer:'Powering the Future of Green Compute',
+        'ui.summary':'Summary','ui.compact':'Compact',
+        'summary.title':'HDS Zenith — One‑Screen Summary','summary.badge.green':'Green DC','summary.badge.tropical':'Tropical Ready','summary.badge.aiops':'AIOps','summary.badge.rapid':'Rapid Deploy','summary.kpi1.l':'Full‑year PUE','summary.kpi2.l':'Rack Density','summary.kpi3.l':'Space Utilization','summary.kpi4.l':'External Footprint','summary.kpi5.l':'Roadmap','summary.kpi6.l':'Ops Platform','summary.kpi6.v':'Hardware‑agnostic AIOps','summary.col1.t':'Zenith‑Cool','summary.col1.d':'Hybrid cooling (thermosyphon + DLC on‑demand) for tropical efficiency.','summary.col2.t':'Zenith‑Deploy','summary.col2.d':'2.4m ceiling, slab‑on‑grade, busbars: +50% space, -60% footprint.','summary.col3.t':'Zenith‑Ops','summary.col3.d':'Unified telemetry, predictive loop (Monitor→Analyze→Predict→Actuate).','summary.cta.project':'View R&D KPIs','summary.cta.tech':'See Tech Details','summary.cta.why':'Why HDS'
+      },
+      zh:{
+        brand:'HDS 新加坡',
+        'nav.vision':'愿景','nav.challenge':'挑战','nav.solution':'解决方案','nav.tech':'技术深潜','nav.project':'研发计划','nav.why':'为什么选择 HDS',
+        'vision.h1':'HDS 新加坡','vision.tagline':'赋能新加坡未来：绿色、高效、智能的 AI 算力基础设施','vision.desc':'为新加坡热湿环境与土地约束量身打造新一代微模块数据中心（MDC）。',
+        'challenge.h2':'新加坡的独特挑战','challenge.c1.title':'1. 计算密度指数级增长','challenge.c1.desc':'>50kW 机柜超出现有风冷极限','challenge.c2.title':'2. 环境热力学约束','challenge.c2.desc':'高温高湿导致冷却能耗主导','challenge.c3.title':'3. 时空资源约束','challenge.c3.desc':'土地稀缺、建设成本高',
+        'solution.h2':'我们的解决方案：HDS “Zenith” 微模块系列','solution.p1.title':'Zenith‑Cool','solution.p1.desc':'混合制冷在热带实现极致 PUE','solution.p2.title':'Zenith‑Deploy','solution.p2.desc':'空间 +50%，占地 −60%','solution.p3.title':'Zenith‑Ops','solution.p3.desc':'AIOps 统一监控与预测维护',
+        'tech.h2':'技术深潜','cool.h3':'Zenith‑Cool',
+        'project.h2':'研发计划：“Tropic‑AI” 微模块','project.kpi1.t':'KPI 1：PUE < 1.15','project.kpi1.d':'全年 PUE < 1.15 的现场验证','project.kpi2.t':'KPI 2：200kW/柜','project.kpi2.d':'面向超高密度 AI 的直液冷方案','project.kpi3.t':'KPI 3：AIOps','project.kpi3.d':'统一风冷/液冷/混合',
+        'why.h2':'为什么选择 HDS 新加坡？','why.c1.t':'1. 垂直一体化技术栈','why.c1.d':'自研核心器件到系统与软件','why.c2.t':'2. 超高密度就绪','why.c2.d':'200kW+ 直液冷','why.c3.t':'3. 一站式 ECP 交付','why.c3.d':'机柜/供配电/制冷/运维一体化','why.c4.t':'4. 全球+本地研发','why.c4.d':'本地标准 + 全球交付经验',
+        footer:'为绿色算力未来赋能',
+        'ui.summary':'摘要','ui.compact':'紧凑',
+        'summary.title':'HDS Zenith — 一屏摘要','summary.badge.green':'绿色数据中心','summary.badge.tropical':'热带适配','summary.badge.aiops':'AIOps','summary.badge.rapid':'快速部署','summary.kpi1.l':'全年 PUE','summary.kpi2.l':'单柜密度','summary.kpi3.l':'空间利用率','summary.kpi4.l':'外部占地','summary.kpi5.l':'路线图','summary.kpi6.l':'运维平台','summary.kpi6.v':'硬件无关 AIOps','summary.col1.t':'Zenith‑Cool','summary.col1.d':'热虹吸 + 按需直液冷，实现热带高能效。','summary.col2.t':'Zenith‑Deploy','summary.col2.d':'2.4m 层高、地面承重、母线：空间 +50%，占地 −60%。','summary.col3.t':'Zenith‑Ops','summary.col3.d':'统一遥测，预测闭环（监测→分析→预测→执行）。','summary.cta.project':'查看研发 KPI','summary.cta.tech':'查看技术细节','summary.cta.why':'为什么选择 HDS'
+      }
+    };
 
-            const setLanguage = (lang) => {
-                if (lang !== 'en' && lang !== 'zh') lang = 'en';
-                currentLang = lang;
-                document.documentElement.lang = lang === 'en' ? 'en-US' : 'zh-CN';
+    let LANG = localStorage.getItem('hds_lang') || (navigator.language.startsWith('zh') ? 'zh' : 'en');
+    function applyI18n(){
+      document.documentElement.lang = LANG==='zh'?'zh-Hans':'en';
+      document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');const v=I18N[LANG][k]; if(v!==undefined){ el.textContent=v; }});
+    }
 
-                const content = contentStore[lang];
-
-                document.querySelectorAll('[data-lang-key]').forEach(el => {
-                    const key = el.dataset.langKey;
-                    if (content[key]) {
-                        if (key.includes('Desc') || key.includes('Pt')) {
-                            el.innerHTML = content[key];
-                        } else {
-                            el.textContent = content[key];
-                        }
-                    }
-                });
-
-                document.title = content.docTitle;
-
-                const toggleText = lang === 'en' ? content.toggleZh : content.toggleEn;
-                if (toggleBtn) toggleBtn.textContent = toggleText;
-                if (toggleBtnMobile) toggleBtnMobile.textContent = toggleText;
-
-                const chartContent = content.charts;
-                initChart(chartContent.pue);
-                initDeployChart(chartContent.deploy);
-                initTimelineChart(chartContent.timeline);
-
-                const techTabs = document.querySelectorAll('#tech-toggles .tech-toggle-btn');
-                if (techTabs.length === 3) {
-                    techTabs[0].textContent = content.techTab1;
-                    techTabs[1].textContent = content.techTab2;
-                    techTabs[2].textContent = content.techTab3;
-                }
-            };
-
-            const initScrollNav = () => {
-                document.querySelectorAll('a[data-scroll-to]').forEach(anchor => {
-                    anchor.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const targetId = this.getAttribute('data-scroll-to');
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                        const mobileMenu = document.getElementById('mobile-menu');
-                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-                            mobileMenu.classList.add('hidden');
-                        }
-                    });
-                });
-            };
-
-            const initTechToggles = () => {
-                const toggleButtons = document.querySelectorAll('.tech-toggle-btn');
-                const contentPanes = document.querySelectorAll('.tech-content-pane');
-
-                toggleButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        const targetId = button.getAttribute('data-target');
-                        
-                        contentPanes.forEach(pane => {
-                            if (pane.id === targetId) {
-                                pane.classList.remove('hidden');
-                            } else {
-                                pane.classList.add('hidden');
-                            }
-                        });
-
-                        toggleButtons.forEach(btn => {
-                            if (btn === button) {
-                                btn.classList.remove('tech-toggle-btn-inactive');
-                                btn.classList.add('tech-toggle-btn-active');
-                            } else {
-                                btn.classList.remove('tech-toggle-btn-active');
-                                btn.classList.add('tech-toggle-btn-inactive');
-                            }
-                        });
-
-                        if (targetId === 'tech-content-cool') {
-                            setTimeout(() => initChart(contentStore[currentLang].charts.pue), 50);
-                        }
-                        if (targetId === 'tech-content-deploy') {
-                            setTimeout(() => initDeployChart(contentStore[currentLang].charts.deploy), 50);
-                        }
-                    });
-                });
-            };
-
-            const initMobileMenu = () => {
-                const btn = document.getElementById('mobile-menu-btn');
-                const menu = document.getElementById('mobile-menu');
-                if (btn && menu) {
-                    btn.addEventListener('click', () => {
-                        menu.classList.toggle('hidden');
-                    });
-                }
-            };
-            
-            const handleLangToggle = (e) => {
-                e.preventDefault();
-                const newLang = currentLang === 'en' ? 'zh' : 'en';
-                setLanguage(newLang);
-            };
-
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', handleLangToggle);
-            }
-            if (toggleBtnMobile) {
-                toggleBtnMobile.addEventListener('click', (e) => {
-                    handleLangToggle(e);
-                    const menu = document.getElementById('mobile-menu');
-                    if (menu) menu.classList.add('hidden');
-                });
-            }
-
-            initScrollNav();
-            initTechToggles();
-            initMobileMenu();
-            setLanguage('en'); 
-
+    /******** Charts ********/
+    let pueChart, timelineChart;
+    function initCharts(){
+      const pueCtx=document.getElementById('pueChart');
+      if(pueCtx){
+        pueChart=new Chart(pueCtx.getContext('2d'),{
+          type:'bar',
+          data:{labels:[LANG==='zh'?'传统 DC（风冷）':'Traditional DC (Air-Cooled)',LANG==='zh'?'HDS Zenith（混合）':'HDS Zenith (Hybrid)'],datasets:[{label:LANG==='zh'?'PUE（越低越好）':'PUE (Lower is Better)',data:[1.45,1.15],backgroundColor:['rgba(209,213,219,.7)','rgba(15,118,110,.7)'],borderColor:['rgba(107,114,128,1)','rgba(13,148,136,1)'],borderWidth:2}]},
+          options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:1}}}
         });
-    </script>
+      }
+      const tlCtx=document.getElementById('timelineChart');
+      if(tlCtx){
+        timelineChart=new Chart(tlCtx.getContext('2d'),{
+          type:'bar',indexAxis:'y',
+          data:{labels:[LANG==='zh'?'阶段三：现场验证与 PUE 测试':'Phase 3: Live Validation & PUE Testing',LANG==='zh'?'阶段二：样机与集成':'Phase 2: Prototype & Integration',LANG==='zh'?'阶段一：基础研发':'Phase 1: Foundational R&D'],datasets:[{label:'Q',data:[[4,6],[2,4],[0,2]],backgroundColor:'rgba(255,255,255,.85)',borderColor:'rgba(209,213,219,1)',borderWidth:2,barPercentage:.6}]},
+          options:{responsive:true,maintainAspectRatio:false,scales:{x:{min:0,max:6}}}
+        });
+      }
+    }
 
+    /******** UI ********/
+    function initUI(){
+      // Smooth scroll (also works from Summary overlay)
+      document.querySelectorAll('[data-scroll-to]').forEach(a=>{
+        a.addEventListener('click',e=>{
+          e.preventDefault();
+          const id=a.getAttribute('data-scroll-to');
+          const target=document.getElementById(id);
+          const panel=document.getElementById('summaryPanel');
+          const doScroll=()=>{ target?.scrollIntoView({behavior:'smooth',block:'start'}); document.getElementById('mobile-menu')?.classList.add('hidden'); };
+          if(panel && !panel.classList.contains('hidden')){ panel.classList.add('hidden'); setTimeout(doScroll,10); }
+          else { doScroll(); }
+        });
+      });
+      // Mobile menu
+      const mm=document.getElementById('mobile-menu-btn');
+      if(mm){ mm.addEventListener('click',()=>document.getElementById('mobile-menu').classList.toggle('hidden')); }
+      // Compact toggle
+      document.getElementById('compact-toggle').addEventListener('click',()=>document.body.classList.toggle('compact'));
+      // Lang toggle
+      document.getElementById('lang-toggle').addEventListener('click',()=>{LANG=LANG==='zh'?'en':'zh';localStorage.setItem('hds_lang',LANG);applyI18n();initCharts();});
+      // Summary
+      const openBtn=document.getElementById('summary-toggle');
+      const closeBtn=document.getElementById('closeSummary');
+      const panel=document.getElementById('summaryPanel');
+      if(openBtn&&panel){openBtn.addEventListener('click',()=>panel.classList.remove('hidden'));}
+      if(closeBtn&&panel){closeBtn.addEventListener('click',()=>panel.classList.add('hidden'));}
+      const isSmall=window.matchMedia('(max-width: 767px)').matches;
+      if(isSmall && !sessionStorage.getItem('hds_summary_seen')){panel.classList.remove('hidden');sessionStorage.setItem('hds_summary_seen','1');}
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{applyI18n(); initCharts(); initUI();});
+  </script>
 </body>
 </html>
